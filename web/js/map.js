@@ -23,7 +23,7 @@ export const openTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}
 
 // Creation des couches pour les stations Vélo et les restaurants
 export const veloLayer = L.layerGroup().addTo(map); // Couches pour les stations Vélo
-export const restaurantLayer = L.layerGroup(); // Couches pour les restaurants
+export const restaurantLayer = L.layerGroup().addTo(map); // Couches pour les restaurants
 
 // Contrôle des couches
 const baseMaps = {
