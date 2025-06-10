@@ -37,4 +37,5 @@ bin/
 node_modules/
 
 ### Maven ###
-java/Nancy-Map/target/
+target/
+.mvn/
