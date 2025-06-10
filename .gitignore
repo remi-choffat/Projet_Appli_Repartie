@@ -35,3 +35,6 @@ bin/
 *.jar
 *.war
 node_modules/
+
+### Maven ###
+java/Nancy-Map/target/
