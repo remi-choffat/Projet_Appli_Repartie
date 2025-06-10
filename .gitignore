@@ -29,9 +29,9 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-*.xml
 *.iml
 *.class
 *.log
 *.jar
 *.war
+node_modules/

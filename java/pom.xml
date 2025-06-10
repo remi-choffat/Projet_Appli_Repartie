@@ -1,0 +1,17 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>sae</groupId>
+    <artifactId>nancymap</artifactId>
+    <version>1</version>
+
+    <name>Nancy Map</name>
+    <description>S4-IL-02 Projet d'Application Répartie</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>19.11.0.0</version>
+        </dependency>
+    </dependencies>
+</project>
