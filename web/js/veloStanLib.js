@@ -23,7 +23,7 @@ async function fetchStations() {
     }
 }
 
-export async function initVeloLayer() {
+async function initVeloLayer() {
     veloLayer.clearLayers();
     const stations = await fetchStations();
     stations.forEach(station => {
@@ -40,5 +40,5 @@ export async function initVeloLayer() {
 
 // Initialisation de la carte et des stations
 initVeloLayer().catch(error => {
-    console.error("Erreur lors de l'initialisation de la carte :", error);
+    console.error("Erreur lors de l'initialisation des stations de vélo sur la carte :", error);
 });

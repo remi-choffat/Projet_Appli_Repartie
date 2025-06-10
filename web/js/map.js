@@ -1,9 +1,9 @@
 // Coordonnées par défaut : Nancy
-const defaultCoords = [48.6881068, 6.1322327];
+export let coordonnees = [48.6881068, 6.1322327];
 const defaultZoom = 13;
 
 // La carte affichée sur la page
-export const map = L.map('map').setView(defaultCoords, defaultZoom);
+export const map = L.map('map').setView(coordonnees, defaultZoom);
 
 // base layer Nancy Map
 export const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -43,8 +43,8 @@ L.control.layers(baseMaps, overlayMaps).addTo(map);
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
         position => {
-            const userCoords = [position.coords.latitude, position.coords.longitude];
-            map.setView(userCoords, defaultZoom);
+            coordonnees = [position.coords.latitude, position.coords.longitude];
+            map.setView(coordonnees, defaultZoom);
         },
         () => {
             // Permission refusée ou erreur, reste sur Nancy
