@@ -2,11 +2,44 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Projet Application Répartie</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Nancy Map - Projet d'Application Répartie">
+    <meta name="author" content="Rémi Choffat">
+    <title>Nancy Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <link rel="icon" type="image/ico" href="img/favicon.ico">
 </head>
-<body>
 
+<body>
+<section class="section">
+    <div id="en-tete">
+        <div class="header-flex-container">
+            <div class="en-tete" style="display: inline;">
+                <h1 class="title">Nancy Map</h1>
+                <h2 class="subtitle">Projet d'Application Répartie</h2>
+            </div>
+            <div id="header-droite">
+                <span id="notif"><i id="icone-notif" class="far fa-bell"></i><span id="notif-icon-count"></span></span>
+                <img src="./img/nancy_map.png" alt="Logo Nancy Map" width="100px"/>
+            </div>
+        </div>
+        <hr/>
+    </div>
+
+    <div class="container">
+        <div id="map"></div>
+    </div>
+</section>
 </body>
+
+<script type="module" src="js/map.js"></script>
+<script type="module" src="js/veloStanLib.js"></script>
 </html>

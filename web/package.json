@@ -1,0 +1,17 @@
+{
+  "name": "nancymap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "js/script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/remi-choffat/Projet_Appli_Repartie.git"
+  },
+  "private": true,
+  "dependencies": {
+    "leaflet": "^1.9.4"
+  }
+}
