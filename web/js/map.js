@@ -33,7 +33,7 @@ const baseMaps = {
 };
 
 const overlayMaps = {
-    "Stations Vélo": veloLayer,
+    "Stations VeloStanLib": veloLayer,
     "Restaurants": restaurantLayer
 };
 
@@ -48,7 +48,7 @@ if (navigator.geolocation) {
         },
         () => {
             // Permission refusée ou erreur, reste sur Nancy
-            console.log("Geolocation non disponible ou permission refusée, utilisation des coordonnées par défaut.");
+            console.log("Géolocalisation non disponible ou permission refusée, utilisation des coordonnées par défaut.");
         }
     );
 }
