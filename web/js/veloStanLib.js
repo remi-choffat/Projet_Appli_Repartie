@@ -1,8 +1,11 @@
 import {veloLayer} from "./map.js";
 
+// URL de l'API Cyclocity pour Nancy
 const CYCLOCITY_API_STATIONS = "https://api.cyclocity.fr/contracts/nancy/gbfs/v2/station_information.json";
 const CYCLOCITY_API_STATUT = "https://api.cyclocity.fr/contracts/nancy/gbfs/v2/station_status.json";
 
+
+// Icône pour les stations de vélo
 const bikeIcon = L.icon({
     iconUrl: 'img/bike-icon.png',
     iconSize: [32, 32],
@@ -10,6 +13,11 @@ const bikeIcon = L.icon({
     popupAnchor: [0, -32]
 });
 
+
+/**
+ * Récupère la liste des stations de vélo depuis l'API Cyclocity.
+ * @returns {Promise<*|*[]>} Liste des stations de vélo.
+ */
 async function fetchStations() {
     try {
         const response = await fetch(CYCLOCITY_API_STATIONS);
@@ -24,6 +32,11 @@ async function fetchStations() {
     }
 }
 
+
+/**
+ * Récupère le statut des stations de vélo depuis l'API Cyclocity.
+ * @returns {Promise<*|*[]>} Statut des stations de vélo (nombre de vélos et de places disponibles).
+ */
 async function fetchStationsStatus() {
     try {
         const response = await fetch(CYCLOCITY_API_STATUT);
@@ -36,6 +49,11 @@ async function fetchStationsStatus() {
     }
 }
 
+
+/**
+ * Initialise la couche des stations de vélo sur la carte.
+ * @returns {Promise<void>}
+ */
 async function initVeloLayer() {
     veloLayer.clearLayers();
     const [stations, statuses] = await Promise.all([fetchStations(), fetchStationsStatus()]);
@@ -60,6 +78,7 @@ async function initVeloLayer() {
         }
     });
 }
+
 
 // Initialisation de la carte et des stations
 initVeloLayer().catch(error => {

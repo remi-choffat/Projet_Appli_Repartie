@@ -5,7 +5,7 @@ const defaultZoom = 13;
 // La carte affichée sur la page
 export const map = L.map('map').setView(coordonnees, defaultZoom);
 
-// base layer Nancy Map
+// Création des cartes de base
 export const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: 'Nancy Map'
@@ -37,6 +37,7 @@ const overlayMaps = {
     "Restaurants": restaurantLayer
 };
 
+// Ajout du contrôle des couches à la carte
 L.control.layers(baseMaps, overlayMaps).addTo(map);
 
 // Demande la position de l'utilisateur pour centrer la carte
