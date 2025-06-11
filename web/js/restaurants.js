@@ -1,7 +1,10 @@
 import {restaurantLayer, coordonnees} from "./map.js";
 
+// URL de l'API pour les restaurants
 const RMI_API = "../resto.json"; // TODO: Remplacer par l'URL de l'API RMI
 
+
+// Icône pour les restaurants
 const restaurantIcon = L.icon({
     iconUrl: 'img/restaurant-icon.png',
     iconSize: [32, 32],
@@ -9,6 +12,11 @@ const restaurantIcon = L.icon({
     popupAnchor: [0, -32]
 });
 
+
+/**
+ * Récupère la liste des restaurants depuis l'API.
+ * @returns {Promise<*|*[]>} Liste des restaurants.
+ */
 async function fetchRestaurants() {
     try {
         const response = await fetch(RMI_API);
@@ -23,6 +31,13 @@ async function fetchRestaurants() {
     }
 }
 
+
+/**
+ * Détermine le statut d'un restaurant en fonction de ses heures d'ouverture et de fermeture.
+ * @param heureOuverture L'heure d'ouverture du restaurant au format HH:MM
+ * @param heureFermeture L'heure de fermeture du restaurant au format HH:MM
+ * @returns {{statut: string, couleur: string}} Un objet contenant le statut du restaurant et la couleur associée.
+ */
 function getRestaurantStatus(heureOuverture, heureFermeture) {
     const now = new Date();
     const [hO, mO] = heureOuverture.split(':').map(Number);
@@ -54,6 +69,11 @@ function getRestaurantStatus(heureOuverture, heureFermeture) {
     return {statut: "Fermé", couleur: "#dc3545"};
 }
 
+
+/**
+ * Initialise la couche des restaurants sur la carte.
+ * @returns {Promise<void>}
+ */
 async function initRestoLayer() {
     restaurantLayer.clearLayers();
     const restaurants = await fetchRestaurants();
@@ -87,6 +107,7 @@ async function initRestoLayer() {
         }
     }
 }
+
 
 // Initialisation de la carte et des stations
 initRestoLayer().catch(error => {
