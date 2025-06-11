@@ -39,6 +39,11 @@ async function fetchRestaurants() {
  * @returns {{statut: string, couleur: string}} Un objet contenant le statut du restaurant et la couleur associée.
  */
 function getRestaurantStatus(heureOuverture, heureFermeture) {
+
+    if (!heureOuverture || !heureFermeture) {
+        return {statut: "Horaires non renseignées", couleur: "#6c757d"}; // Gris pour heures non définies
+    }
+
     const now = new Date();
     const [hO, mO] = heureOuverture.split(':').map(Number);
     const [hF, mF] = heureFermeture.split(':').map(Number);
@@ -90,6 +95,8 @@ async function initRestoLayer() {
             resto.lat = data.features[0].geometry.coordinates[1]; // Latitude
             resto.lon = data.features[0].geometry.coordinates[0]; // Longitude
             resto.adresse = data.features[0].properties.label; // Adresse formatée
+            resto.heureOuverture = resto.heureouverture;
+            resto.heureFermeture = resto.heurefermeture;
 
             const {statut, couleur} = getRestaurantStatus(resto.heureOuverture, resto.heureFermeture);
 
@@ -102,7 +109,7 @@ async function initRestoLayer() {
                     ${statut}
                 </span>
                 <br/>
-                <small>Ouvert de ${resto.heureOuverture} à ${resto.heureFermeture}</small>
+                ${resto.heureOuverture && resto.heureFermeture ? `<small>Ouvert de ${resto.heureOuverture} à ${resto.heureFermeture}</small>` : ""}
             `;
 
             L.marker([resto.lat, resto.lon], {icon: restaurantIcon})
