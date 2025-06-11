@@ -19,6 +19,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import sae.bd.ServiceBd;
 import sae.proxyHttp.ServiceProxy;
 
 /**
@@ -68,7 +69,6 @@ public class Serveur implements ServiceServeurHttp {
 					os.write(res);
 					os.close();
 
-
 				} catch (Exception e) {
 					e.printStackTrace();
 					exchange.sendResponseHeaders(500, -1);
@@ -76,6 +76,8 @@ public class Serveur implements ServiceServeurHttp {
 								
 			}
 		});
+
+
 
 		for (Entry<String, String> e : proxy_endpoints.entrySet()) {
 			server.createContext(e.getKey(), new HttpHandler() {
@@ -123,5 +125,9 @@ public class Serveur implements ServiceServeurHttp {
 		this.proxy = service;
 	}
 
+	@Override
+	public void enregisterServiceBd(ServiceBd service) throws RemoteException {
+		return;
+	}
 	
 }

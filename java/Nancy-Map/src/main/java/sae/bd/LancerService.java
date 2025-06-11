@@ -1,9 +1,11 @@
-package sae.proxyHttp;
+package sae.bd;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+
+import org.json.JSONObject;
 
 import sae.http.ServiceServeurHttp;
 
@@ -19,14 +21,17 @@ public class LancerService {
 		String remote_address = args[2];
 		int remote_port = Integer.parseInt(args[3]);
 
-		Proxy p = new Proxy();
+		Bd bd = new Bd("choffat2u", "NancyMapBD2025");
 		Registry reg_local = LocateRegistry.getRegistry(local_address, local_port);
-		ServiceProxy sp = (ServiceProxy)UnicastRemoteObject.exportObject(p, 0);
-		reg_local.rebind("proxy", sp);
+		ServiceBd sbd = (ServiceBd)UnicastRemoteObject.exportObject(bd, 0);
+		reg_local.rebind("bd", sbd);
 
 		Registry reg_remote = LocateRegistry.getRegistry(remote_address, remote_port);
-		// ServiceServeurHttp servhttp = reg_remote.lookup("");
-		// servhttp.enregisterServiceProxy(sp);
+		ServiceServeurHttp servhttp = (ServiceServeurHttp)reg_remote.lookup(ServiceServeurHttp.SERVICE_NAME);
+		servhttp.enregisterServiceBd(sbd);
+
+		JSONObject jo = bd.getRestos();
+		System.out.println(jo);
 
 	}
 }
