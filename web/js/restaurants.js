@@ -6,7 +6,7 @@ const RMI_API = "../resto.json"; // TODO: Remplacer par l'URL de l'API RMI
 
 // Icône pour les restaurants
 const restaurantIcon = L.icon({
-    iconUrl: 'img/restaurant-icon.png',
+    iconUrl: 'img/map-icons/restaurant-icon.png',
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32]

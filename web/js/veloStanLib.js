@@ -7,7 +7,7 @@ const CYCLOCITY_API_STATUT = "https://api.cyclocity.fr/contracts/nancy/gbfs/v2/s
 
 // Icône pour les stations de vélo
 const bikeIcon = L.icon({
-    iconUrl: 'img/bike-icon.png',
+    iconUrl: 'img/map-icons/bike-icon.png',
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32]
