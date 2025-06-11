@@ -25,6 +25,13 @@ public class Utils {
 
 	}
 
+
+	protected static void sendError(HttpExchange exchange, Throwable err) throws IOException {
+		sendError(exchange);
+
+		err.printStackTrace();
+	}
+
 	protected static void sendError(HttpExchange exchange) throws IOException {
 
 		System.err.println(">> ERROR AT ");

@@ -82,7 +82,7 @@ public class DbRestosHandler implements HttpHandler {
 
 			}
 		} catch (Exception e) {
-			Utils.sendError(exchange);
+			Utils.sendError(exchange, e);
 		}
 
 
