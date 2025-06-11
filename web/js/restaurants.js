@@ -1,7 +1,7 @@
 import {restaurantLayer, coordonnees} from "./map.js";
 
 // URL de l'API pour les restaurants
-const RMI_API = "../resto.json"; // TODO: Remplacer par l'URL de l'API RMI
+const RMI_API = "http://localhost:9090/restos"; // TODO: Remplacer par l'URL de l'API RMI
 
 
 // Icône pour les restaurants
@@ -152,8 +152,7 @@ function openReservationForm(resto) {
  * @returns {Promise<void>} La liste des tables disponibles.
  */
 async function fetchAvailableTables(resto, date, time) {
-    // const url = `${RMI_API}/${resto.id}/tables?date=${date}&heure=${time}`;
-    const url = "../tables.json";
+    const url = `${RMI_API}/${resto.id}/tables?date=${date}&heure=${time}`;
     const res = await fetch(url);
     if (!res.ok) return alert('Erreur lors de la récupération des tables');
     const reponse = await res.json();
@@ -234,6 +233,7 @@ async function sendReservation(data) {
  * @returns {Promise<void>}
  */
 async function initRestoLayer() {
+
     restaurantLayer.clearLayers();
     const restaurants = await fetchRestaurants();
     for (const resto of restaurants) {

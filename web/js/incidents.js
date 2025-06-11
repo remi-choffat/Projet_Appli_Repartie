@@ -1,7 +1,7 @@
 import {incidentsLayer, coordonnees} from "./map.js";
 
 // URL de l'API pour les incidents de la circulation
-const RMI_API = "../incidents.json"; // TODO: Remplacer par l'URL de l'API RMI
+const RMI_API = "http://localhost:9090/incidents"; // TODO: Remplacer par l'URL de l'API RMI
 
 
 // Icône pour les incidents
