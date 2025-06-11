@@ -13,7 +13,6 @@ import java.util.Map;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import oracle.net.aso.h;
 import sae.bd.ServiceBd;
 
 /**
@@ -36,17 +35,12 @@ public class DbRestosHandler implements HttpHandler {
 				return;
 			}
 
-			System.out.println("REQ");
 
 			String path = exchange.getRequestURI().toString().split("\\?")[0].replaceAll(exchange.getHttpContext().getPath(), "");
-			System.out.println(path);
 
 			if (path.charAt(0) == '/') {
 				path = path.substring(1);
 			}
-
-
-			System.out.println(path);
 
 			if (path.isEmpty()) {
 				String json = bd.getRestos();
@@ -55,9 +49,6 @@ public class DbRestosHandler implements HttpHandler {
 			}
 
 			String[] s = path.split("\\/");
-
-
-			System.out.println(Arrays.toString(s));
 
 			int idtable = Integer.parseInt(s[0]);
 

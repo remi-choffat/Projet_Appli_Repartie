@@ -22,7 +22,6 @@ import com.sun.net.httpserver.HttpServer;
 
 import sae.bd.ServiceBd;
 import sae.http.handlers.DbRestosHandler;
-import sae.http.handlers.DbTablesLibres;
 import sae.http.handlers.EndpointHandler;
 import sae.http.handlers.ProxyHandler;
 import sae.proxyHttp.ServiceProxy;
