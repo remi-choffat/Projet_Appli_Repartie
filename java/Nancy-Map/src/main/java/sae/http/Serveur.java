@@ -113,8 +113,9 @@ public class Serveur implements ServiceServeurHttp {
 		server.start();
 		Registry reg = LocateRegistry.getRegistry(regip, regport);
 		reg.rebind(ServiceServeurHttp.SERVICE_NAME, (ServiceServeurHttp)UnicastRemoteObject.exportObject(this, 0));
-		System.out.println("Server started, (service: "+ ServiceServeurHttp.SERVICE_NAME + " on " + regip +":"+ regport+")");
-		System.out.println("Listening on " + server.getAddress().getPort());
+
+		System.out.format("Service started : '%s' on registry %s:%d\n", ServiceServeurHttp.SERVICE_NAME, regip, regport);
+		System.out.format("Server started, listening on port %d...\n", server.getAddress().getPort());
 	}
 
 	@Override
