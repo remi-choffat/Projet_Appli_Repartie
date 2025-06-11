@@ -11,6 +11,22 @@ import com.sun.net.httpserver.HttpExchange;
 public class Utils {
 
 
+	protected static void sendText(HttpExchange exchange, String text) throws IOException {
+		OutputStream os = exchange.getResponseBody();
+		if (text == null) {
+			sendError(exchange);
+		}
+		exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+
+		byte[] response = text.getBytes();
+		exchange.getResponseHeaders().set("Content-Type", "text/plain");
+		exchange.sendResponseHeaders(200, response.length);
+		os.write(response);
+		os.close();
+
+
+	}
+
 	protected static void sendOk(HttpExchange exchange, String json) throws IOException {
 		exchange.sendResponseHeaders(200, -1);
 	}

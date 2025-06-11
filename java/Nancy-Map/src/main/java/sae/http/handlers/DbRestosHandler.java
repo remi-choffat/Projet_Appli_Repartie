@@ -98,7 +98,7 @@ public class DbRestosHandler implements HttpHandler {
 								),
 							Integer.parseInt((String)json.get("tableId"))
 							);
-
+					Utils.sendText(exchange, res);	
 
 					break;
 
