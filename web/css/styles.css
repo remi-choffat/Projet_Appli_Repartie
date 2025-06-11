@@ -46,3 +46,13 @@ footer a:hover {
     color: #2557a7;
     text-decoration: underline;
 }
+
+.badge-ouverture {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.95em;
+    margin-bottom: 0.5rem;
+}
