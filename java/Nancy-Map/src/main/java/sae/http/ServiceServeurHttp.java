@@ -10,8 +10,9 @@ import sae.proxyHttp.ServiceProxy;
  */
 public interface ServiceServeurHttp extends Remote {
 
-	public void enregisterService(ServiceProxy service) throws RemoteException;
+	public void enregisterServiceProxy(ServiceProxy service) throws RemoteException;
 
 
+	final String SERVICE_NAME = "LeServiceHttpServeurLuiMeme";
 	
 }
