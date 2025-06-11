@@ -4,7 +4,7 @@ import java.sql.*;
 
 import org.json.*;
 
-public class Bd  {
+public class Bd implements ServiceBd{
 	Connection con;
 	PreparedStatement stmt;
 	public Bd(String user, String password){

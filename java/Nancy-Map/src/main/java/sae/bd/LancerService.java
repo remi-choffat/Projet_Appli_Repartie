@@ -1,5 +1,6 @@
 package sae.bd;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -10,7 +11,7 @@ import org.json.JSONObject;
 import sae.http.ServiceServeurHttp;
 
 public class LancerService {
-	public static void main(String[] args) throws RemoteException{
+	public static void main(String[] args) throws RemoteException, NotBoundException{
 		if(args.length != 4){
 			System.out.println("4 arguments requis : <ip registry local> <port local> <ip distant> <port distant>");
 			return;
