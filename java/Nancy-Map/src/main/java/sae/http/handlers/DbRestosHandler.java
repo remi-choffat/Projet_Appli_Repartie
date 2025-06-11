@@ -31,10 +31,10 @@ public class DbRestosHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		try {
-			// if (bd == null) {
-			// 	Utils.sendError(exchange);
-			// 	return;
-			// }
+			if (bd == null) {
+				Utils.sendError(exchange);
+				return;
+			}
 
 			System.out.println("REQ");
 
