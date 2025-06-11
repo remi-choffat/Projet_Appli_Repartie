@@ -16,6 +16,8 @@ public class Utils {
 			sendError(exchange);
 		}
 
+		exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+
 		byte[] response = json.getBytes();
 		exchange.getResponseHeaders().set("Content-Type", "application/json");
 		exchange.sendResponseHeaders(200, response.length);
