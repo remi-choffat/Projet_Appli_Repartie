@@ -17,11 +17,11 @@ public class ProxyHandler implements HttpHandler {
 
 
 
-	ServiceProxy proxy;
+	Serveur serveur;
 	String url;
 
-	public ProxyHandler(ServiceProxy proxy, String url) {
-		this.proxy = proxy;
+	public ProxyHandler(Serveur serveur, String url) {
+		this.serveur = serveur;
 		this.url = url;
 	}
 
@@ -29,12 +29,12 @@ public class ProxyHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		label :  {
-			if (proxy==null) {
+			if (serveur.proxy==null) {
 				Utils.sendError(exchange);
 				break label;
 			}
 
-			String json = proxy.getJson(url);
+			String json = serveur.proxy.getJson(url);
 			Utils.sendJson(exchange, json);
 		}
 

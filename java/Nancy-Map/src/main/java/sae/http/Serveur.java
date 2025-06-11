@@ -86,7 +86,7 @@ public class Serveur implements ServiceServeurHttp {
 	private void registerProxyContexts() {
 
 		for (Entry<String, String> e : proxy_endpoints.entrySet()) {
-			getContext(e.getKey()).setHandler(new ProxyHandler(proxy, e.getValue()));
+			getContext(e.getKey()).setHandler(new ProxyHandler(this, e.getValue()));
 		}
 	}
 	@Override
@@ -95,7 +95,7 @@ public class Serveur implements ServiceServeurHttp {
 		registerDbContexts();
 	}
 	private void registerDbContexts() {
-		getContext("/restos").setHandler(new DbRestosHandler(bd));
+		getContext("/restos").setHandler(new DbRestosHandler(this));
 		//TODO
 	}
 

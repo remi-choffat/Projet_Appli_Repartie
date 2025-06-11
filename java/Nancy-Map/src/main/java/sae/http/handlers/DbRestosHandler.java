@@ -14,6 +14,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import sae.bd.ServiceBd;
+import sae.http.Serveur;
 
 /**
  * DbRestosHandler
@@ -21,16 +22,16 @@ import sae.bd.ServiceBd;
 public class DbRestosHandler implements HttpHandler {
 
 
-	ServiceBd bd;
+	Serveur serveur;
 
-	public DbRestosHandler(ServiceBd bd) {
-		this.bd = bd;
+	public DbRestosHandler(Serveur serveur) {
+		this.serveur = serveur;
 	}
 
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		try {
-			if (bd == null) {
+			if (serveur.bd == null) {
 				Utils.sendError(exchange);
 				return;
 			}
@@ -43,7 +44,7 @@ public class DbRestosHandler implements HttpHandler {
 			}
 
 			if (path.isEmpty()) {
-				String json = bd.getRestos();
+				String json = serveur.bd.getRestos();
 				Utils.sendJson(exchange, json.toString());
 				return;
 			}
@@ -74,7 +75,7 @@ public class DbRestosHandler implements HttpHandler {
 							Integer.parseInt(heurspl[0])
 							);
 
-					Utils.sendJson(exchange, bd.getTablesLibres(idtable, d));
+					Utils.sendJson(exchange, serveur.bd.getTablesLibres(idtable, d));
 					break;
 				default:
 					Utils.sendError(exchange);
