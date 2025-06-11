@@ -102,11 +102,43 @@ function openReservationForm(resto) {
         <label>Heure : <input class="input" type="time" id="resTime" required></label>
         <br/><br/>
         <button class="button" id="checkTablesBtn">Voir les tables disponibles</button>
+        <div id="reservationError" style="color:#dc3545;margin-top:10px;"></div>
     `);
     document.getElementById('checkTablesBtn').onclick = async () => {
         const date = document.getElementById('resDate').value;
         const time = document.getElementById('resTime').value;
-        if (!date || !time) return alert('Veuillez saisir une date et une heure');
+        const errorDiv = document.getElementById('reservationError');
+        errorDiv.textContent = "";
+
+        if (!date || !time) {
+            errorDiv.textContent = "Veuillez saisir une date et une heure.";
+            return;
+        }
+
+        // Vérifie que la date/heure n'est pas dans le passé
+        const now = new Date();
+        const selected = new Date(date + "T" + time);
+        if (selected < now) {
+            errorDiv.textContent = "Veuillez sélectionner une date et une heure dans le futur.";
+            return;
+        }
+
+        // Vérifie les horaires d'ouverture/fermeture si définis
+        if (resto.heureOuverture && resto.heureFermeture) {
+            const [hO, mO] = resto.heureOuverture.split(':').map(Number);
+            const [hF, mF] = resto.heureFermeture.split(':').map(Number);
+            const ouverture = new Date(selected);
+            ouverture.setHours(hO, mO, 0, 0);
+            const fermeture = new Date(selected);
+            fermeture.setHours(hF, mF, 0, 0);
+            if (fermeture <= ouverture) fermeture.setDate(fermeture.getDate() + 1);
+
+            if (selected < ouverture || selected >= fermeture) {
+                errorDiv.textContent = `Réservation possible uniquement entre ${resto.heureOuverture} et ${resto.heureFermeture}.`;
+                return;
+            }
+        }
+
         await fetchAvailableTables(resto, date, time);
     };
 }
