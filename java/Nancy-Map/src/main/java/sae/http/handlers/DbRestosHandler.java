@@ -72,7 +72,7 @@ public class DbRestosHandler implements HttpHandler {
 							Integer.parseInt(datespl[1]),
 							Integer.parseInt(datespl[2]),
 							Integer.parseInt(heurspl[0]),
-							Integer.parseInt(heurspl[0])
+							Integer.parseInt(heurspl[1])
 							);
 
 					Utils.sendJson(exchange, serveur.bd.getTablesLibres(idtable, d));
