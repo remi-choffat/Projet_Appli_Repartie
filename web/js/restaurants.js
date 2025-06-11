@@ -76,6 +76,128 @@ function getRestaurantStatus(heureOuverture, heureFermeture) {
 
 
 /**
+ * Affiche une modale de réservation avec le contenu HTML fourni.
+ * @param html Le contenu HTML à afficher dans la modale.
+ */
+function showReservationModal(html) {
+    const modal = document.getElementById('reservationModal');
+    const content = document.getElementById('reservationContent');
+    content.innerHTML = html;
+    modal.style.display = 'flex';
+    modal.onclick = e => {
+        if (e.target === modal) modal.style.display = 'none';
+    };
+}
+
+
+/**
+ * Ouvre le formulaire de réservation pour un restaurant.
+ * @param resto L'objet restaurant contenant les informations nécessaires.
+ */
+function openReservationForm(resto) {
+    showReservationModal(`
+        <h3 class="subtitle">Réserver chez ${resto.nom}</h3>
+        <label>Jour : <input class="input" type="date" id="resDate" min="${new Date().toISOString().split('T')[0]}" required></label>
+        <br/><br/>
+        <label>Heure : <input class="input" type="time" id="resTime" required></label>
+        <br/><br/>
+        <button class="button" id="checkTablesBtn">Voir les tables disponibles</button>
+    `);
+    document.getElementById('checkTablesBtn').onclick = async () => {
+        const date = document.getElementById('resDate').value;
+        const time = document.getElementById('resTime').value;
+        if (!date || !time) return alert('Veuillez saisir une date et une heure');
+        await fetchAvailableTables(resto, date, time);
+    };
+}
+
+
+/**
+ * Récupère les tables disponibles pour un restaurant à une date et une heure données.
+ * @param resto L'objet restaurant contenant les informations nécessaires.
+ * @param date La date de la réservation au format YYYY-MM-DD.
+ * @param time L'heure de la réservation au format HH:MM.
+ * @returns {Promise<void>} La liste des tables disponibles.
+ */
+async function fetchAvailableTables(resto, date, time) {
+    // const url = `${RMI_API}/${resto.id}/tables?date=${date}&heure=${time}`;
+    const url = "../tables.json";
+    const res = await fetch(url);
+    if (!res.ok) return alert('Erreur lors de la récupération des tables');
+    const reponse = await res.json();
+    const tables = reponse.tables_dispo || [];
+    if (!tables.length > 0) return showReservationModal('<p>Aucune table disponible à ce créneau.</p>');
+    showReservationModal(`
+        <h3 class="subtitle">Tables disponibles</h3>
+        <ul>
+            ${tables.map(t => `<li>
+                <button class="selectTableBtn button" data-idtable="${t.numTable}">${t.nom}</button>
+            </li>`).join('')}
+        </ul>
+    `);
+    document.querySelectorAll('.selectTableBtn').forEach(btn => {
+        btn.onclick = () => openVisitorForm(resto, date, time, btn.dataset.idtable);
+    });
+}
+
+
+/**
+ * Ouvre le formulaire de réservation pour un visiteur.
+ * @param resto L'objet restaurant contenant les informations nécessaires.
+ * @param date La date de la réservation au format YYYY-MM-DD.
+ * @param time L'heure de la réservation au format HH:MM.
+ * @param tableId L'ID de la table sélectionnée.
+ */
+function openVisitorForm(resto, date, time, tableId) {
+    showReservationModal(`
+        <h3 class="subtitle">Vos informations</h3>
+        <form id="visitorForm">
+            <input class="input" type="text" name="nom" placeholder="Nom" required>
+            <br/><br/>
+            <input class="input" type="text" name="prenom" placeholder="Prénom" required>
+            <br/><br/>
+            <input class="input" type="number" name="convives" placeholder="Nombre de convives" min="1" required>
+            <br/><br/>
+            <input class="input" type="tel" name="tel" placeholder="Téléphone" required>
+            <br/><br/>
+            <button id="boutonReserver" class="button" type="submit">Réserver</button>
+        </form>
+    `);
+    document.getElementById('visitorForm').onsubmit = async e => {
+        e.preventDefault();
+        const bouton = document.getElementById('boutonReserver');
+        bouton.disabled = true;
+        bouton.classList.add("is-loading");
+        const data = Object.fromEntries(new FormData(e.target));
+        data.date = new Date(date + 'T' + time).toISOString();
+        data.tableId = tableId;
+        await sendReservation(data);
+    };
+}
+
+
+/**
+ * Envoie les données de réservation à l'API.
+ * @param data Les données de réservation à envoyer.
+ * @returns {Promise<void>}
+ */
+async function sendReservation(data) {
+    const res = await fetch(RMI_API + "/reserver", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+        const errorText = await res.text();
+        console.error('Erreur lors de la réservation :', errorText);
+        return showReservationModal(`<p>Erreur lors de la réservation : ${errorText}</p>`);
+    }
+    const result = await res.json();
+    showReservationModal(`<p>${result.message || 'Réservation effectuée !'}</p>`);
+}
+
+
+/**
  * Initialise la couche des restaurants sur la carte.
  * @returns {Promise<void>}
  */
@@ -110,11 +232,19 @@ async function initRestoLayer() {
                 </span>
                 <br/>
                 ${resto.heureOuverture && resto.heureFermeture ? `<small>Ouvert de ${resto.heureOuverture} à ${resto.heureFermeture}</small>` : ""}
+                <br/><br/>
+                <button class="btn-reserver button" data-resto='${JSON.stringify({id: resto.id, nom: resto.nom})}'>Réserver une table</button>
             `;
 
             L.marker([resto.lat, resto.lon], {icon: restaurantIcon})
                 .addTo(restaurantLayer)
-                .bindPopup(popupContent);
+                .bindPopup(popupContent)
+                .on('popupopen', function (e) {
+                    const btn = document.querySelector('.btn-reserver');
+                    if (btn) {
+                        btn.onclick = () => openReservationForm(resto);
+                    }
+                });
         }
     }
 }
