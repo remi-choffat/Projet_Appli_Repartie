@@ -9,9 +9,19 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static java.util.Map.entry;
+
+import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 
 import sae.bd.ServiceBd;
+import sae.http.handlers.DbRestosHandler;
+import sae.http.handlers.EndpointHandler;
+import sae.http.handlers.ProxyHandler;
 import sae.proxyHttp.ServiceProxy;
 
 /**
@@ -20,8 +30,30 @@ import sae.proxyHttp.ServiceProxy;
 public class Serveur implements ServiceServeurHttp {
 
 
-	ServiceProxy proxy;
-	ServiceBd bd;
+	private static Map<String, String> proxy_endpoints = Map.ofEntries(
+		entry("/incidents", "https://carto.g-ny.org/data/cifs/cifs_waze_v2.json")
+	);
+
+
+
+	public ServiceProxy proxy;
+	public ServiceBd bd;
+
+
+	private HashMap<String, HttpContext> contexts = new HashMap<>();
+
+	public HttpContext getContext(String key) {
+		HttpContext context;
+		if (contexts.containsKey(key)) {
+			context = contexts.get(key);
+		} else {
+			context = server.createContext(key);
+			contexts.put(key, context);
+		}
+		return context;
+
+
+	}
 
 
 	private HttpServer server;
@@ -29,15 +61,12 @@ public class Serveur implements ServiceServeurHttp {
 	public Serveur(int port) throws IOException {
 		InetSocketAddress inet = new InetSocketAddress(port);
 		server = HttpServer.create(inet, 0);
+	
+		getContext("/").setHandler(new EndpointHandler(contexts));
+
+	}
 
 	
-		Endpoints.endpoints(server);
-		Endpoints.proxy(server, proxy);
-		Endpoints.db(server, bd);
-
-		}
-
-
 
 
 	public void start(String regip, int regport) throws RemoteException {
@@ -52,11 +81,23 @@ public class Serveur implements ServiceServeurHttp {
 	@Override
 	public void enregisterServiceProxy(ServiceProxy service) throws RemoteException {
 		this.proxy = service;
+		registerProxyContexts();
 	}
+	private void registerProxyContexts() {
 
+		for (Entry<String, String> e : proxy_endpoints.entrySet()) {
+			getContext(e.getKey()).setHandler(new ProxyHandler(proxy, e.getValue()));
+		}
+	}
 	@Override
 	public void enregisterServiceBd(ServiceBd service) throws RemoteException {
 		this.bd = service;
+		registerDbContexts();
 	}
-	
+	private void registerDbContexts() {
+		getContext("/restos").setHandler(new DbRestosHandler(bd));
+		//TODO
+	}
+
+
 }
