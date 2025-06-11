@@ -31,7 +31,8 @@ CREATE OR REPLACE PROCEDURE reserver_table(
    p_nbconvives IN NUMBER,
    p_telephone IN VARCHAR2,
    p_heuredebut IN TIMESTAMP,
-   p_heurefin IN TIMESTAMP
+   p_heurefin IN TIMESTAMP,
+   result OUT VARCHAR2
 ) AS
    v_count INTEGER;
 BEGIN
@@ -45,22 +46,29 @@ BEGIN
                      WHERE NUMTABLE = p_numtable
                        AND p_heuredebut BETWEEN HEUREDEBUT AND HEUREFIN);
    IF v_count = 0 THEN
-      RAISE_APPLICATION_ERROR(-20001, 'La table n''est pas disponible pour la réservation aux horaires renseignés.');
+      -- La table n'est pas disponible pour la réservation
+      result := 'La table n''est pas disponible pour la réservation aux horaires renseignés.';
+      RETURN;
    END IF;
    -- Insère la réservation
    INSERT INTO RESERVATIONS (NUMTABLE, NOMCLIENT, PRENOMCLIENT, NBCONVIVES, TELEPHONE, HEUREDEBUT, HEUREFIN)
    VALUES (p_numtable, p_nomclient, p_prenomclient, p_nbconvives, p_telephone, p_heuredebut, p_heurefin);
+   result := 'Réservation effectuée avec succès.';
    COMMIT;
 EXCEPTION
    WHEN OTHERS THEN
       ROLLBACK;
-      RAISE_APPLICATION_ERROR(-20002, 'Erreur lors de la réservation : ' || SQLERRM);
+      result := 'Erreur lors de la réservation : ' || SQLERRM;
+      RETURN;
 END reserver_table;
 
 
 -- Appel de la procédure pour réserver une table
+DECLARE
+   v_result VARCHAR2(256);
 BEGIN
    reserver_table(21, 'Choffat', 'Rémi', 4, '0669696969',
-                  TO_TIMESTAMP('2025-06-12 12:00:00', 'YYYY-MM-DD HH24:MI:SS'),
-                  TO_TIMESTAMP('2025-06-12 14:00:00', 'YYYY-MM-DD HH24:MI:SS'));
+                  TO_TIMESTAMP('2025-06-14 12:00:00', 'YYYY-MM-DD HH24:MI:SS'),
+                  TO_TIMESTAMP('2025-06-14 14:00:00', 'YYYY-MM-DD HH24:MI:SS'), v_result);
+   DBMS_OUTPUT.PUT_LINE(v_result);
 end;
