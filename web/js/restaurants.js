@@ -156,7 +156,7 @@ async function fetchAvailableTables(resto, date, time) {
     const res = await fetch(url);
     if (!res.ok) return alert('Erreur lors de la récupération des tables');
     const reponse = await res.json();
-    const tables = reponse.tables_dispo || [];
+    const tables = reponse.tables || [];
     if (!tables.length > 0) return showReservationModal('<p>Aucune table disponible à ce créneau.</p>');
     showReservationModal(`
         <h3 class="subtitle">Tables disponibles</h3>
