@@ -46,8 +46,37 @@ const overlayMaps = {
 // Ajout du contrôle des couches à la carte
 L.control.layers(baseMaps, overlayMaps).addTo(map);
 
+// Désactivation des couches de vélo si elles sont ajoutées sans la couche principale
+const layerNamesToDisable = {
+    "Vélos disponibles": veloDispoLayer,
+    "Places libres": veloPlacesLibresLayer
+};
+
 // Événement pour mettre à jour les couches de vélo lorsque des couches sont ajoutées ou supprimées
-map.on('overlayadd overlayremove', () => {
+map.on('overlayadd overlayremove', function () {
+    const isVeloLayerActive = map.hasLayer(veloLayer);
+
+    const controlContainer = document.querySelector('.leaflet-control-layers-overlays');
+    if (!controlContainer) return;
+
+    const labels = controlContainer.querySelectorAll('label');
+
+    labels.forEach(label => {
+        const labelText = label.textContent.trim();
+        if (layerNamesToDisable[labelText]) {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                if (!isVeloLayerActive) {
+                    checkbox.disabled = true;
+                    checkbox.checked = false;
+                    map.removeLayer(layerNamesToDisable[labelText]); // remove marker group
+                } else {
+                    checkbox.disabled = false;
+                }
+            }
+        }
+    });
+
     if (typeof window.updateVeloLayer === 'function') {
         window.updateVeloLayer();
     }
