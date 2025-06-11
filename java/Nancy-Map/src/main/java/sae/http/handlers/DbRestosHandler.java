@@ -39,7 +39,7 @@ public class DbRestosHandler implements HttpHandler {
 
 			String path = exchange.getRequestURI().toString().split("\\?")[0].replaceAll(exchange.getHttpContext().getPath(), "");
 
-			if (path.charAt(0) == '/') {
+			if (!path.isEmpty() && path.charAt(0) == '/') {
 				path = path.substring(1);
 			}
 
