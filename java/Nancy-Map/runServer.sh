@@ -13,5 +13,6 @@
 killall rmiregistry 
 sleep 0.5
 rmiregistry $1 -J-classpath -Jtarget/Nancy-Map-1-jar-with-dependencies.jar & 
+sleep 0.5
 mvn clean compile assembly:single
-java -cp target/Nancy-Map-1-jar-with-dependencies.jar sae.http.LancerServeur localhost $1
+java -cp target/Nancy-Map-1-jar-with-dependencies.jar sae.http.LancerServeur localhost $1 9090
