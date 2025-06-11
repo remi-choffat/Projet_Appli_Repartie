@@ -11,7 +11,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 /**
- * EndpointHandler
+ * EndpointHandlr
  */
 public class EndpointHandler implements HttpHandler {
 

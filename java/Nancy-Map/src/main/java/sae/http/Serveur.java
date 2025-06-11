@@ -16,10 +16,13 @@ import java.util.Map.Entry;
 import static java.util.Map.entry;
 
 import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import sae.bd.ServiceBd;
 import sae.http.handlers.DbRestosHandler;
+import sae.http.handlers.DbTablesLibres;
 import sae.http.handlers.EndpointHandler;
 import sae.http.handlers.ProxyHandler;
 import sae.proxyHttp.ServiceProxy;

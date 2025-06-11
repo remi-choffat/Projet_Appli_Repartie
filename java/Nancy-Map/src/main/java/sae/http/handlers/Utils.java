@@ -26,6 +26,13 @@ public class Utils {
 	}
 
 	protected static void sendError(HttpExchange exchange) throws IOException {
+
+		System.err.println(">> ERROR AT ");
+		for (StackTraceElement stackTrace : Thread.currentThread().getStackTrace()) {
+			System.err.println("\t"+stackTrace.toString());
+			
+		}
+
 		exchange.sendResponseHeaders(400, -1);
 
 	}
