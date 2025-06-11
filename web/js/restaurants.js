@@ -86,15 +86,19 @@ async function initRestoLayer() {
                 console.warn(`Aucune coordonnée trouvée pour l'adresse : ${resto.adresse}`);
                 continue;
             }
-            resto.lat = data.features[0].geometry.coordinates[1];
-            resto.lon = data.features[0].geometry.coordinates[0];
+            resto.nom = resto.nom || "Restaurant";
+            resto.lat = data.features[0].geometry.coordinates[1]; // Latitude
+            resto.lon = data.features[0].geometry.coordinates[0]; // Longitude
+            resto.adresse = data.features[0].properties.label; // Adresse formatée
 
             const {statut, couleur} = getRestaurantStatus(resto.heureOuverture, resto.heureFermeture);
 
             const popupContent = `
-                <b>${resto.nom}</b>
+                <b>🍴 ${resto.nom.toUpperCase()}</b>
                 <br/><br/>
-                <span class="badge-ouverture" style="background:${couleur};">
+                <span>${resto.adresse}</span>
+                <br/><br/>
+                <span class="badge-statut" style="background:${couleur};">
                     ${statut}
                 </span>
                 <br/>

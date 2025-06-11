@@ -51,6 +51,29 @@ async function fetchStationsStatus() {
 
 
 /**
+ * Détermine la couleur du statut d'une station de vélo en fonction du nombre de vélos disponibles.
+ * @param nb Nombre de vélos disponibles dans la station.
+ * @returns {string} La couleur associée au statut de la station.
+ */
+function getBikeStatusColor(nb) {
+    if (nb === 0) return "#dc3545";      // rouge : aucun vélo
+    if (nb <= 3) return "#ffc107";       // jaune : peu de vélos
+    return "#28a745";                    // vert : ok
+}
+
+
+/**
+ * Renvoie le mot au pluriel si le nombre est supérieur ou égal à 2.
+ * @param word Le mot à pluraliser.
+ * @param count Le nombre à vérifier pour la pluralisation.
+ * @returns {*} Le mot au pluriel ou au singulier.
+ */
+function pluralize(word, count) {
+    return word + (count >= 2 ? "s" : "");
+}
+
+
+/**
  * Initialise la couche des stations de vélo sur la carte.
  * @returns {Promise<void>}
  */
@@ -65,10 +88,22 @@ async function initVeloLayer() {
     stations.forEach(station => {
         if (station.lat && station.lon) {
             const status = statusMap.get(String(station.station_id));
-            let popupContent = `<b>${station.name}</b>`;
+            const nbVelosDispo = status ? status.num_bikes_available : 0;
+            const nbPlacesLibres = status ? status.num_docks_available : 0;
+            let popupContent = `<b>🚲 ${station.name.toUpperCase()}</b><br/><br/>`;
             if (status) {
-                popupContent += `<br/>Vélos disponibles : ${status.num_bikes_available}`;
-                popupContent += `<br/>Places libres : ${status.num_docks_available}`;
+                const couleur = getBikeStatusColor(nbVelosDispo);
+                popupContent += `
+                <span class="badge-statut" style="background:${couleur};">
+                    ${nbVelosDispo > 0 ? nbVelosDispo : "Aucun"} ${pluralize("vélo", nbVelosDispo)} 
+                    ${pluralize("disponible", nbVelosDispo)}
+                </span>
+                <br/>
+                <span>
+                    ${nbPlacesLibres > 0 ? nbPlacesLibres : "Aucune"} ${pluralize("place", nbPlacesLibres)} 
+                    ${pluralize("libre", nbPlacesLibres)}
+                </span>
+            `;
             } else {
                 popupContent += `<br/><i>Statut indisponible</i>`;
             }
