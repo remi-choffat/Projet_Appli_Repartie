@@ -1,4 +1,4 @@
-import { veloLayer, veloDispoLayer, veloPlacesLibresLayer } from "./map.js";
+import { map, veloLayer, veloDispoLayer, veloPlacesLibresLayer } from "./map.js";
 
 // URL de l'API Cyclocity pour Nancy
 const CYCLOCITY_API_STATIONS = "https://api.cyclocity.fr/contracts/nancy/gbfs/v2/station_information.json";
@@ -12,6 +12,10 @@ const bikeIcon = L.icon({
     iconAnchor: [16, 32],
     popupAnchor: [0, -32]
 });
+
+// global variables to store stations and statuses data
+let stationsData = [];
+let statusesData = [];
 
 
 /**
@@ -74,50 +78,67 @@ function pluralize(word, count) {
 
 
 /**
- * Initialise la couche des stations de vélo sur la carte.
- * @returns {Promise<void>}
+ * Met à jour la couche des stations de vélo sur la carte.
  */
-async function initVeloLayer() {
+function updateVeloLayer() {
     veloLayer.clearLayers();
-    veloDispoLayer.clearLayers();
-    veloPlacesLibresLayer.clearLayers();
-    const [stations, statuses] = await Promise.all([fetchStations(), fetchStationsStatus()]);
 
-    // Création d'une map pour un accès rapide au statut par station_id
-    const statusMap = new Map();
-    statuses.forEach(status => statusMap.set(status.station_id, status));
+    // Verification si Stations VeloStanLib est actif
+    const isVeloLayerActive = map.hasLayer(veloLayer);
+    if (!isVeloLayerActive) return; // Si la couche n'est pas active, on ne fait rien
 
-    stations.forEach(station => {
+    // verification des filtres actifs
+    const bikesFilter = map.hasLayer(veloDispoLayer);
+    const docksFilter = map.hasLayer(veloPlacesLibresLayer);
+
+    const statusMap = new Map(statusesData.map(status => [status.station_id, status]));
+
+    stationsData.forEach(station => {
         if (station.lat && station.lon) {
             const status = statusMap.get(String(station.station_id));
             const nbVelosDispo = status ? status.num_bikes_available : 0;
             const nbPlacesLibres = status ? status.num_docks_available : 0;
-            let popupContent = `<b>🚲 ${station.name.toUpperCase()}</b><br/><br/>`;
-            if (status) {
-                const couleur = getBikeStatusColor(nbVelosDispo);
-                popupContent += `
-                <span class="badge-statut" style="background:${couleur};">
-                    ${nbVelosDispo > 0 ? nbVelosDispo : "Aucun"} ${pluralize("vélo", nbVelosDispo)} 
-                    ${pluralize("disponible", nbVelosDispo)}
-                </span>
-                <br/>
-                <span>
-                    ${nbPlacesLibres > 0 ? nbPlacesLibres : "Aucune"} ${pluralize("place", nbPlacesLibres)} 
-                    ${pluralize("libre", nbPlacesLibres)}
-                </span>
-            `;
+
+            // logique pour déterminer si la station doit être affichée
+            let shouldDisplay = false;
+            if (!bikesFilter && !docksFilter) {
+                shouldDisplay = true; // afficher toutes les stations si aucun filtre n'est actif
             } else {
-                popupContent += `<br/><i>Statut indisponible</i>`;
+                if (bikesFilter && nbVelosDispo > 0) shouldDisplay = true;
+                if (docksFilter && nbPlacesLibres > 0) shouldDisplay = true;
             }
-            const marker = L.marker([station.lat, station.lon], { icon: bikeIcon })
-                .bindPopup(popupContent);
-            marker.addTo(veloLayer);
-            if (nbVelosDispo > 0) marker.addTo(veloDispoLayer);
-            if (nbPlacesLibres > 0) marker.addTo(veloPlacesLibresLayer);
+
+            if (shouldDisplay) {
+                const popupContent = `
+                    <b>🚲 ${station.name.toUpperCase()}</b><br><br>
+                    <span class="badge-statut" style="background:${getBikeStatusColor(nbVelosDispo)};">
+                        ${nbVelosDispo > 0 ? nbVelosDispo : "Aucun"} ${pluralize("vélo", nbVelosDispo)} 
+                        ${pluralize("disponible", nbVelosDispo)}
+                    </span><br>
+                    <span>
+                        ${nbPlacesLibres > 0 ? nbPlacesLibres : "Aucune"} ${pluralize("place", nbPlacesLibres)} 
+                        ${pluralize("libre", nbPlacesLibres)}
+                    </span>
+                `;
+                L.marker([station.lat, station.lon], { icon: bikeIcon })
+                    .addTo(veloLayer)
+                    .bindPopup(popupContent);
+            }
         }
     });
 }
 
+/**
+ * Initialise la couche des stations de vélo sur la carte.
+ * @returns {Promise<void>}
+ */
+export async function initVeloLayer() {
+    [stationsData, statusesData] = await Promise.all([fetchStations(), fetchStationsStatus()]);
+    updateVeloLayer();
+}
+
+// export function to update velo layer globally
+window.updateVeloLayer = updateVeloLayer;
 
 // Initialisation de la carte et des stations
 initVeloLayer().catch(error => {

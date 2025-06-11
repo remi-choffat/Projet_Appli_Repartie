@@ -24,8 +24,8 @@ export const openTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}
 // Creation des couches pour les stations Vélo et les restaurants
 export const veloLayer = L.layerGroup().addTo(map); // Couches pour les stations Vélo
 export const restaurantLayer = L.layerGroup().addTo(map); // Couches pour les restaurants
-export const veloDispoLayer = L.layerGroup().addTo(map); // Couches pour les stations Vélo avec vélos disponibles
-export const veloPlacesLibresLayer = L.layerGroup().addTo(map); // Couches pour les stations Vélo avec places libres
+export const veloDispoLayer = L.layerGroup(); // Couches pour les stations Vélo avec vélos disponibles
+export const veloPlacesLibresLayer = L.layerGroup(); // Couches pour les stations Vélo avec places libres
 export const incidentsLayer = L.layerGroup().addTo(map); // Couches pour les incidents de la circulation
 
 // Contrôle des couches
@@ -45,6 +45,13 @@ const overlayMaps = {
 
 // Ajout du contrôle des couches à la carte
 L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+// Événement pour mettre à jour les couches de vélo lorsque des couches sont ajoutées ou supprimées
+map.on('overlayadd overlayremove', () => {
+    if (typeof window.updateVeloLayer === 'function') {
+        window.updateVeloLayer();
+    }
+});
 
 // Demande la position de l'utilisateur pour centrer la carte
 if (navigator.geolocation) {
