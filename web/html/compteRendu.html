@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Compte rendu - Nancy Map - Projet d'Application Répartie">
+    <meta name="author" content="Rémi Choffat">
+    <title>Nancy Map - Compte rendu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="icon" type="image/ico" href="/img/favicon.ico">
+</head>
+<body>
+<section class="section">
+    <div id="en-tete">
+        <div class="header-flex-container">
+            <div class="en-tete">
+                <h1 class="title">Nancy Map</h1>
+                <h2 class="subtitle">Compte rendu - Projet d'Application Répartie</h2>
+            </div>
+            <div id="header-droite">
+                <a href="/index.html" class="button is-primary">Retour à la carte</a>
+            </div>
+        </div>
+        <hr/>
+    </div>
+
+    <div class="container">
+        <h2 class="title is-3">Compte rendu du projet</h2>
+
+        <section class="content">
+            <h3 class="title is-4">Architecture de l'application</h3>
+            <p>Notre application répartie est composée des éléments suivants :</p>
+            <ul>
+                <li><strong>Frontend</strong> : Interface web utilisant HTML, CSS, JavaScript et Leaflet pour afficher une carte interactive centrée sur Nancy.</li>
+                <li><strong>Backend</strong> : Service RMI déployé sur le serveur de l'IUT, interrogeant une base de données Oracle pour les données des restaurants.</li>
+                <li><strong>Base de données</strong> : Hébergée sur <code>charlemagne.iutnc.univ-lorraine.fr:1521/infodb</code>, contient les tables <code>RESTAURANTS</code>, <code>TABLES_RESTO</code> et <code>RESERVATIONS</code>.</li>
+                <li><strong>Proxy</strong> : Service HTTP (à l'aide de <code>HttpServer</code>) pour contourner les restrictions CORS et accéder à des données bloquées.</li>
+                <li><strong>API externes</strong> : Utilisation de l'API Cyclocity (<code>https://api.cyclocity.fr</code>) pour les données des stations Vélo.</li>
+            </ul>
+            <figure class="image">
+                <img src="/img/architecture.png" alt="Schéma de l'architecture" style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0 auto;">
+            </figure>
+        </section>
+
+        <section class="content">
+            <h3 class="title is-4">Technologies utilisées</h3>
+            <ul>
+                <li><strong>Frontend</strong> : HTML, CSS, JavaScript, Leaflet 1.9.4</li>
+                <li><strong>Backend</strong> : Java (RMI, HttpClient, HttpServer), JSON pour les échanges de données.</li>
+                <li><strong>Base de données</strong> : Oracle (via JDBC).</li>
+                <li><strong>Hébergement</strong> : Serveur webetu pour le site, machines de l'IUT pour les services RMI.</li>
+                <li><strong>Versionnement</strong> : Git, hébergé sur GitHub.</li>
+            </ul>
+        </section>
+
+        <section class="content">
+            <h3 class="title is-4">Ce qui a été réalisé</h3>
+            <ul>
+                <li>Carte interactive centrée sur Nancy avec trois couches de base : OpenStreetMap, OpenStreetMap.HOT, OpenTopoMap.</li>
+                <li>Affichage des stations Vélo avec leurs adresses et capacités, récupérées via l'API Cyclocity.</li>
+                <li>Interface utilisateur avec navigation entre la carte et la page de compte rendu.</li>
+                <li>...to do...</li>
+            </ul>
+        </section>
+
+        <section class="content">
+            <h3 class="title is-4">Instructions d'utilisation</h3>
+            <p>Pour utiliser l'application :</p>
+            <ol>
+                <li>Accédez au site via le serveur <code>webetu</code>.</li>
+                <li>La carte affiche par défaut les stations Vélo et les restaurants .</li>
+                <li>Utilisez le contrôleur de couches (en haut à droite) pour activer/désactiver les stations Vélo ou les restaurants, et pour changer la couche de base (Nancy Map, Nancy Map HOT, Nancy Topo Map).</li>
+                <li>...to do...</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <h3 class="title is-4">Dépôt Git</h3>
+            <p>Le code source complet du projet est disponible sur :</p>
+            <p><a href="https://github.com/remi-choffat/Projet_Appli_Repartie.git">https://github.com/remi-choffat/Projet_Appli_Repartie.git</a></p>
+        </section>
+    </div>
+</section>
+
+<footer>
+    <p>Projet réalisé par
+        <a href="https://github.com/remi-choffat/Projet_Appli_Repartie.git">GRAFF Mathieu, CHOFFAT Rémi, BABACHANAKH Kateryna, VAULTRIN Maxime</a>
+    </p>
+</footer>
+</body>
+</html>
