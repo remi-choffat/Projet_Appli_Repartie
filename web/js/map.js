@@ -27,6 +27,7 @@ export const restaurantLayer = L.layerGroup().addTo(map); // Couches pour les re
 export const veloDispoLayer = L.layerGroup(); // Couches pour les stations Vélo avec vélos disponibles
 export const veloPlacesLibresLayer = L.layerGroup(); // Couches pour les stations Vélo avec places libres
 export const incidentsLayer = L.layerGroup().addTo(map); // Couches pour les incidents de la circulation
+export const lyceesLayer = L.layerGroup().addTo(map); // Couches pour les établissements scolaires
 
 // Contrôle des couches
 const baseMaps = {
@@ -40,7 +41,8 @@ const overlayMaps = {
     "Vélos disponibles": veloDispoLayer,
     "Places libres": veloPlacesLibresLayer,
     "Restaurants": restaurantLayer,
-    "Incidents de la circulation": incidentsLayer
+    "Incidents de la circulation": incidentsLayer,
+    "Lycées": lyceesLayer
 };
 
 // Ajout du contrôle des couches à la carte
