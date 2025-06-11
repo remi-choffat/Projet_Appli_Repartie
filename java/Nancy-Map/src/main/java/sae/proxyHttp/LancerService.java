@@ -1,5 +1,6 @@
 package sae.proxyHttp;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -8,7 +9,7 @@ import java.rmi.server.UnicastRemoteObject;
 import sae.http.ServiceServeurHttp;
 
 public class LancerService {
-	public static void main(String[] args) throws RemoteException{
+	public static void main(String[] args) throws RemoteException, NotBoundException{
 		if(args.length != 4){
 			System.out.println("4 arguments requis : <ip registry local> <port local> <ip distant> <port distant>");
 			return;
@@ -25,8 +26,8 @@ public class LancerService {
 		reg_local.rebind("proxy", sp);
 
 		Registry reg_remote = LocateRegistry.getRegistry(remote_address, remote_port);
-		// ServiceServeurHttp servhttp = reg_remote.lookup("");
-		// servhttp.enregisterServiceProxy(sp);
+		ServiceServeurHttp servhttp = (ServiceServeurHttp)reg_remote.lookup(ServiceServeurHttp.SERVICE_NAME);
+		servhttp.enregisterServiceProxy(sp);
 
 	}
 }

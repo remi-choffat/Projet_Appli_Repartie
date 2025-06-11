@@ -1,5 +1,6 @@
 package sae.bd;
 
+import java.rmi.RemoteException;
 import java.sql.*;
 
 import org.json.*;
@@ -17,7 +18,7 @@ public class Bd implements ServiceBd{
 		}
 	}
 
-	public JSONObject getRestos() {
+	public String getRestos() throws RemoteException{
 		try{
 			JSONObject res = new JSONObject(); // objet JSON final
 			JSONArray ja = new JSONArray(); // liste des restaurants
@@ -34,7 +35,7 @@ public class Bd implements ServiceBd{
 			}
 
 			res.put("restaurants", ja);
-			return res;
+			return res.toString();
 
 		}catch(SQLException e){
 			System.out.println("Problème SQL : " + e.getMessage());

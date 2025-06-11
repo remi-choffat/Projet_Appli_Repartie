@@ -41,13 +41,13 @@ public class Endpoints {
 
 
 	} 
-	private static void sendJson(HttpExchange exchange, JSONObject json) throws IOException {
+	private static void sendJson(HttpExchange exchange, String json) throws IOException {
 		OutputStream os = exchange.getResponseBody();
 		if (json ==null) {
 			sendError(exchange);
 		}
 
-		byte[] response = json.toString().getBytes();
+		byte[] response = json.getBytes();
 		exchange.getResponseHeaders().set("Content-Type", "application/json");
 		exchange.sendResponseHeaders(200, response.length);
 		os.write(response);
@@ -79,7 +79,7 @@ public class Endpoints {
 
 					json.put("endpoints", endpoints);
 
-					sendJson(exchange, json);
+					sendJson(exchange, json.toString());
 				} catch (Exception e) {
 					e.printStackTrace();
 					sendError(exchange);
@@ -99,7 +99,8 @@ public class Endpoints {
 							sendError(exchange);
 							break label;
 						}
-						JSONObject json = proxy.getJson(e.getValue());
+
+						String json = proxy.getJson(e.getValue());
 						sendJson(exchange, json);
 					}
 				}
@@ -116,8 +117,8 @@ public class Endpoints {
 						sendError(exchange);
 						break label;
 					}
-					JSONObject json = bd.getRestos();
-					sendJson(exchange, json);
+					String json = bd.getRestos();
+					sendJson(exchange, json.toString());
 				}
 			}
 		});

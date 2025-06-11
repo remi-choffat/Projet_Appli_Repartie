@@ -31,8 +31,5 @@ public class LancerService {
 		ServiceServeurHttp servhttp = (ServiceServeurHttp)reg_remote.lookup(ServiceServeurHttp.SERVICE_NAME);
 		servhttp.enregisterServiceBd(sbd);
 
-		JSONObject jo = bd.getRestos();
-		System.out.println(jo);
-
 	}
 }

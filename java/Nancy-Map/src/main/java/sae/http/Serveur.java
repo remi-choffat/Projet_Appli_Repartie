@@ -3,6 +3,7 @@ package sae.http;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.channels.Pipe.SourceChannel;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -33,7 +34,6 @@ public class Serveur implements ServiceServeurHttp {
 		Endpoints.endpoints(server);
 		Endpoints.proxy(server, proxy);
 		Endpoints.db(server, bd);
-
 
 		}
 
