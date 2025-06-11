@@ -42,3 +42,4 @@ target/
 
 web/resto.json
 web/incidents.json
+web/tables.json

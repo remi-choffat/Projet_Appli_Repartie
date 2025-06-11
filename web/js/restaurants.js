@@ -41,7 +41,7 @@ async function fetchRestaurants() {
 function getRestaurantStatus(heureOuverture, heureFermeture) {
 
     if (!heureOuverture || !heureFermeture) {
-        return {statut: "Horaires non renseignées", couleur: "#6c757d"}; // Gris pour heures non définies
+        return {statut: "Horaires non renseignées", couleur: "#6c757d"};
     }
 
     const now = new Date();
@@ -162,7 +162,7 @@ async function fetchAvailableTables(resto, date, time) {
         <h3 class="subtitle">Tables disponibles</h3>
         <ul>
             ${tables.map(t => `<li>
-                <button class="selectTableBtn button" data-idtable="${t.numTable}">${t.nom}</button>
+                <button class="selectTableBtn button" data-idtable="${t.numTable}" style="margin-bottom: 5px;">${t.nom}</button>
             </li>`).join('')}
         </ul>
     `);
@@ -213,18 +213,21 @@ function openVisitorForm(resto, date, time, tableId) {
  * @returns {Promise<void>}
  */
 async function sendReservation(data) {
-    const res = await fetch(RMI_API + "/reserver", {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-    });
-    if (!res.ok) {
-        const errorText = await res.text();
-        console.error('Erreur lors de la réservation :', errorText);
-        return showReservationModal(`<p>Erreur lors de la réservation : ${errorText}</p>`);
+    try {
+        const res = await fetch(RMI_API + "/reserver", {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        if (!res.ok) {
+            throw new Error(await res.text());
+        }
+        const result = await res.text();
+        showReservationModal(`<p>${result || 'Réservation effectuée !'}</p>`);
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi de la réservation :', error);
+        showReservationModal(`<p style="color:#dc3545;margin-top:10px;">Une erreur est survenue lors de la réservation...</p>`);
     }
-    const result = await res.json();
-    showReservationModal(`<p>${result.message || 'Réservation effectuée !'}</p>`);
 }
 
 
