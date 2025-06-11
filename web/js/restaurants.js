@@ -120,7 +120,7 @@ async function initRestoLayer() {
 }
 
 
-// Initialisation de la carte et des stations
+// Initialisation de la carte des restaurants
 initRestoLayer().catch(error => {
     console.error("Erreur lors de l'initialisation des restaurants sur la carte :", error);
 });

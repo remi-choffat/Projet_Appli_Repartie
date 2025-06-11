@@ -39,3 +39,6 @@ node_modules/
 ### Maven ###
 target/
 .mvn/
+
+web/resto.json
+web/incidents.json
