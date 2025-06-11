@@ -13,5 +13,6 @@ public interface ServiceServeurHttp extends Remote {
 	public void enregisterService(ServiceProxy service) throws RemoteException;
 
 
+	final String SERVICE_NAME = "LeServiceHttpServeurLuiMeme";
 	
 }
