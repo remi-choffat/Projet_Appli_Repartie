@@ -36,7 +36,6 @@ public class Proxy implements ServiceProxy{
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			if(response.statusCode() >= 200 && response.statusCode() < 300){
 				JSONObject jo = new JSONObject(response.body());
-				System.out.println("bon return");
 				return jo.toString();
 			}
 			return null;

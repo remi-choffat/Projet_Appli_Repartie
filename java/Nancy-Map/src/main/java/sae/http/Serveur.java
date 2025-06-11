@@ -67,8 +67,6 @@ public class Serveur implements ServiceServeurHttp {
 	}
 
 	
-
-
 	public void start(String regip, int regport) throws RemoteException {
 		server.start();
 		Registry reg = LocateRegistry.getRegistry(regip, regport);

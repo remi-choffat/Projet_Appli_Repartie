@@ -2,6 +2,7 @@ package sae.bd;
 
 import java.rmi.RemoteException;
 import java.sql.*;
+import java.util.Calendar;
 
 import org.json.*;
 
@@ -20,22 +21,9 @@ public class Bd implements ServiceBd{
 
 	public String getRestos() throws RemoteException{
 		try{
-			JSONObject res = new JSONObject(); // objet JSON final
-			JSONArray ja = new JSONArray(); // liste des restaurants
 			stmt = con.prepareStatement("SELECT * FROM RESTAURANTS");
 			ResultSet rs = stmt.executeQuery();
-			ResultSetMetaData rsm = rs.getMetaData();
-
-			while(rs.next()){
-				JSONObject jo = new JSONObject(); // représente un restaurant
-				for(int i = 1; i <= rsm.getColumnCount(); i++){
-					jo.put(rsm.getColumnName(i).toLowerCase(), rs.getString(i));
-				}
-				ja.put(jo);
-			}
-
-			res.put("restaurants", ja);
-			return res.toString();
+			return resToJson(rs, "restaurants").toString();
 
 		}catch(SQLException e){
 			System.out.println("Problème SQL : " + e.getMessage());
@@ -43,22 +31,32 @@ public class Bd implements ServiceBd{
 		return null;
 	}
 
-	// debug
-	public static void main(String[] args) throws SQLException, ClassNotFoundException{
-		Connection con;
-		PreparedStatement stmt;
-		String url = "jdbc:oracle:thin:@charlemagne.iutnc.univ-lorraine.fr:1521:infodb";
-		Class.forName("oracle.jdbc.driver.OracleDriver");
-		con = DriverManager.getConnection(url,"choffat2u","NancyMapBD2025");
-
-		stmt = con.prepareStatement("SELECT * FROM RESTAURANTS");
+	@Override
+	public String getTablesLibres(int idResto, Timestamp heure) throws RemoteException, SQLException{
+		stmt = con.prepareStatement("SELECT NUMTABLE, IDRESTO, NOM FROM TABLES_RESTO INNER JOIN RESTAURANTS ON RESTAURANTS.ID = TABLES_RESTO.IDRESTO WHERE IDRESTO = ? AND TO_DATE(\"?:?\", \"HH24:MM\") between TO_DATE(HEUREOUVERTURE, \"HH24:MM\") and TO_DATE(HEUREFERMETURE, \"HH24:MM\") MINUS SELECT NUMTABLE, IDRESTO, NOM FROM TABLES_RESTO INNER JOIN RESERVATIONS ON RESERVATIONS.NUMTABLE = TABLES_RESTO.NUMTABLE WHERE ? between HEUREDEBUT and HEUREFIN");
+		stmt.setInt(0, idResto);
+		stmt.setInt(1, heure.getHours());
+		stmt.setInt(2, heure.getMinutes());
+		stmt.setTimestamp(3, heure);
 		ResultSet rs = stmt.executeQuery();
+	    return resToJson(rs, "tables").toString();
+	}
+
+	private JSONObject resToJson(ResultSet rs, String name) throws SQLException{
+		JSONObject res = new JSONObject(); // objet JSON final
+		JSONArray ja = new JSONArray(); // liste des restaurants
+
+		ResultSetMetaData rsm = rs.getMetaData();
+
 		while(rs.next()){
-			ResultSetMetaData rsm = rs.getMetaData();
+			JSONObject jo = new JSONObject(); // représente un restaurant
 			for(int i = 1; i <= rsm.getColumnCount(); i++){
-			System.out.println(rsm.getColumnName(i) + " " + rs.getString(i));
+				jo.put(rsm.getColumnName(i).toLowerCase(), rs.getString(i));
 			}
+			ja.put(jo);
 		}
 
+		res.put(name, ja);
+		return res;
 	}
 }

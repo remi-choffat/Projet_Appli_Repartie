@@ -61,7 +61,6 @@ public class Endpoints {
 
 	}
 
-
 	public static void endpoints(HttpServer server) {
 		server.createContext("/", new HttpHandler() {
 			@Override
@@ -118,7 +117,7 @@ public class Endpoints {
 						break label;
 					}
 					String json = bd.getRestos();
-					sendJson(exchange, json.toString());
+					sendJson(exchange, json);
 				}
 			}
 		});
