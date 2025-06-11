@@ -1,4 +1,4 @@
-import {veloLayer} from "./map.js";
+import { veloLayer, veloDispoLayer, veloPlacesLibresLayer } from "./map.js";
 
 // URL de l'API Cyclocity pour Nancy
 const CYCLOCITY_API_STATIONS = "https://api.cyclocity.fr/contracts/nancy/gbfs/v2/station_information.json";
@@ -79,6 +79,8 @@ function pluralize(word, count) {
  */
 async function initVeloLayer() {
     veloLayer.clearLayers();
+    veloDispoLayer.clearLayers();
+    veloPlacesLibresLayer.clearLayers();
     const [stations, statuses] = await Promise.all([fetchStations(), fetchStationsStatus()]);
 
     // Création d'une map pour un accès rapide au statut par station_id
@@ -107,9 +109,11 @@ async function initVeloLayer() {
             } else {
                 popupContent += `<br/><i>Statut indisponible</i>`;
             }
-            L.marker([station.lat, station.lon], {icon: bikeIcon})
-                .addTo(veloLayer)
+            const marker = L.marker([station.lat, station.lon], { icon: bikeIcon })
                 .bindPopup(popupContent);
+            marker.addTo(veloLayer);
+            if (nbVelosDispo > 0) marker.addTo(veloDispoLayer);
+            if (nbPlacesLibres > 0) marker.addTo(veloPlacesLibresLayer);
         }
     });
 }
