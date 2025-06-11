@@ -5,10 +5,14 @@ import java.net.URLDecoder;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -77,6 +81,28 @@ public class DbRestosHandler implements HttpHandler {
 
 					Utils.sendJson(exchange, serveur.bd.getTablesLibres(idtable, d));
 					break;
+
+				case "reserver":
+
+					JSONTokener tokener = new JSONTokener(exchange.getRequestBody());	
+					JSONObject json =  new JSONObject(tokener);
+
+					String res = serveur.bd.reserver(
+							(String)json.get("nom"),
+							(String)json.get("prenom"),
+							Integer.parseInt((String)json.get("convives")),
+							(String)json.get("tel"),
+							LocalDateTime.parse(
+								(String)json.get("date"),
+								DateTimeFormatter.ISO_INSTANT
+								),
+							Integer.parseInt((String)json.get("tableId"))
+							);
+
+
+					break;
+
+
 				default:
 					Utils.sendError(exchange);
 

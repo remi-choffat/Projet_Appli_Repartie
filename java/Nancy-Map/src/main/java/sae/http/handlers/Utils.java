@@ -10,6 +10,11 @@ import com.sun.net.httpserver.HttpExchange;
  */
 public class Utils {
 
+
+	protected static void sendOk(HttpExchange exchange, String json) throws IOException {
+		exchange.sendResponseHeaders(200, -1);
+	}
+
 	protected static void sendJson(HttpExchange exchange, String json) throws IOException {
 		OutputStream os = exchange.getResponseBody();
 		if (json ==null) {
