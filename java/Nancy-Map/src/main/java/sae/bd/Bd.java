@@ -12,8 +12,7 @@ public class Bd implements ServiceBd {
     Connection con;
     PreparedStatement stmt;
 
-    public Bd(String user, String password) {
-        String url = "jdbc:oracle:thin:@charlemagne.iutnc.univ-lorraine.fr:1521:infodb";
+    public Bd(String url, String user, String password) {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             con = DriverManager.getConnection(url, user, password);

@@ -55,7 +55,6 @@ public class Serveur implements ServiceServeurHttp {
 
         getContext("/").setHandler(new EndpointHandler(contexts));
         getContext("/webetu").setHandler(new EndpointHandler(contexts));
-
     }
 
     public void start(String regip, int regport) throws RemoteException {
@@ -74,7 +73,6 @@ public class Serveur implements ServiceServeurHttp {
     }
 
     private void registerProxyContexts() {
-
         for (Entry<String, String> e : proxy_endpoints.entrySet()) {
             getContext(e.getKey()).setHandler(new ProxyHandler(this, e.getValue()));
         }
@@ -88,7 +86,6 @@ public class Serveur implements ServiceServeurHttp {
 
     private void registerDbContexts() {
         getContext("/restos").setHandler(new DbRestosHandler(this));
-        //TODO
     }
 
 }
