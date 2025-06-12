@@ -22,7 +22,7 @@ public class Proxy implements ServiceProxy{
 			.version(Version.HTTP_1_1)
 			.followRedirects(Redirect.NORMAL)
 			.connectTimeout(Duration.ofSeconds(20))
-			.proxy(ProxySelector.of(new InetSocketAddress("www-cache", 3128)))
+			// .proxy(ProxySelector.of(new InetSocketAddress("www-cache", 3128)))
 			.build();
 	}
 

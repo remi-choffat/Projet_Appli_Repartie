@@ -44,16 +44,15 @@ public class Serveur implements ServiceServeurHttp {
 
 	private HashMap<String, HttpContext> contexts = new HashMap<>();
 
-	public HttpContext getContext(String key, boolean remove) {
-		if (!contexts.containsKey(key)) {
-			contexts.put(key, server.createContext(key));
+	public HttpContext getContext(String key) {
+		HttpContext context;
+		if (contexts.containsKey(key)) {
+			context = contexts.get(key);
 		} else {
-			if (remove) {
-				server.removeContext(key);
-				contexts.put(key, server.createContext(key));
-			}
+			context = server.createContext(key);
+			contexts.put(key, context);
 		}
-		return contexts.get(key);
+		return context;
 
 
 	}
@@ -65,7 +64,8 @@ public class Serveur implements ServiceServeurHttp {
 		InetSocketAddress inet = new InetSocketAddress(port);
 		server = HttpServer.create(inet, 0);
 	
-		getContext("/", true).setHandler(new EndpointHandler(contexts));
+		getContext("/").setHandler(new EndpointHandler(contexts));
+		getContext("/webetu").setHandler(new EndpointHandler(contexts));
 
 	}
 
@@ -87,7 +87,7 @@ public class Serveur implements ServiceServeurHttp {
 	private void registerProxyContexts() {
 
 		for (Entry<String, String> e : proxy_endpoints.entrySet()) {
-			getContext(e.getKey(), true).setHandler(new ProxyHandler(this, e.getValue()));
+			getContext(e.getKey()).setHandler(new ProxyHandler(this, e.getValue()));
 		}
 	}
 	@Override
@@ -96,7 +96,7 @@ public class Serveur implements ServiceServeurHttp {
 		registerDbContexts();
 	}
 	private void registerDbContexts() {
-		getContext("/restos", true).setHandler(new DbRestosHandler(this));
+		getContext("/restos").setHandler(new DbRestosHandler(this));
 		//TODO
 	}
 
