@@ -11,10 +11,10 @@ import sae.proxyHttp.ServiceProxy;
  */
 public interface ServiceServeurHttp extends Remote {
 
-	public void enregisterServiceProxy(ServiceProxy service) throws RemoteException;
+    void enregisterServiceProxy(ServiceProxy service) throws RemoteException;
 
-	public void enregisterServiceBd(ServiceBd service) throws RemoteException;
+    void enregisterServiceBd(ServiceBd service) throws RemoteException;
 
-	final String SERVICE_NAME = "LeServiceHttpServeurLuiMeme";
-	
+    String SERVICE_NAME = "LeServiceHttpServeurLuiMeme";
+
 }

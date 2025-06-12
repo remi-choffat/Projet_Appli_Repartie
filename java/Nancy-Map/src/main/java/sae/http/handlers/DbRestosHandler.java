@@ -2,12 +2,9 @@ package sae.http.handlers;
 
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +14,6 @@ import org.json.JSONTokener;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import sae.bd.ServiceBd;
 import sae.http.Serveur;
 
 /**
@@ -25,92 +21,88 @@ import sae.http.Serveur;
  */
 public class DbRestosHandler implements HttpHandler {
 
+    Serveur serveur;
 
-	Serveur serveur;
+    public DbRestosHandler(Serveur serveur) {
+        this.serveur = serveur;
+    }
 
-	public DbRestosHandler(Serveur serveur) {
-		this.serveur = serveur;
-	}
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+        try {
+            if (serveur.bd == null) {
+                Utils.sendError(exchange);
+                return;
+            }
 
-	@Override
-	public void handle(HttpExchange exchange) throws IOException {
-		try {
-			if (serveur.bd == null) {
-				Utils.sendError(exchange);
-				return;
-			}
+            String path = exchange.getRequestURI().toString().split("\\?")[0].replaceAll(exchange.getHttpContext().getPath(), "");
 
+            if (!path.isEmpty() && path.charAt(0) == '/') {
+                path = path.substring(1);
+            }
 
-			String path = exchange.getRequestURI().toString().split("\\?")[0].replaceAll(exchange.getHttpContext().getPath(), "");
+            if (path.isEmpty()) {
+                String json = serveur.bd.getRestos();
+                Utils.sendJson(exchange, json);
+                return;
+            }
 
-			if (!path.isEmpty() && path.charAt(0) == '/') {
-				path = path.substring(1);
-			}
+            String[] s = path.split("/");
 
-			if (path.isEmpty()) {
-				String json = serveur.bd.getRestos();
-				Utils.sendJson(exchange, json.toString());
-				return;
-			}
+            int idtable = Integer.parseInt(s[0]);
 
-			String[] s = path.split("\\/");
+            Map<String, String> queryparam = new HashMap<>();
+            for (String split : exchange.getRequestURI().getQuery().split("&")) {
+                String[] entry = split.split("=");
+                queryparam.put(URLDecoder.decode(entry[0], StandardCharsets.UTF_8), URLDecoder.decode(entry[1], StandardCharsets.UTF_8));
+            }
+            String query = s[1];
 
-			int idtable = Integer.parseInt(s[0]);
+            switch (query) {
+                case "tables":
+                    String date = queryparam.get("date");
+                    String heure = queryparam.get("heure");
+                    String[] datespl = date.split("-");
+                    String[] heurspl = heure.split(":");
 
-			Map<String, String> queryparam = new HashMap<>();
-			for (String split : exchange.getRequestURI().getQuery().split("&")) {
-				String[] entry = split.split("=");
-				queryparam.put(URLDecoder.decode(entry[0], "UTF-8"), URLDecoder.decode(entry[1], "UTF-8"));
-			}
-			String query = s[1];
+                    LocalDateTime d = LocalDateTime.of(
+                            Integer.parseInt(datespl[0]),
+                            Integer.parseInt(datespl[1]),
+                            Integer.parseInt(datespl[2]),
+                            Integer.parseInt(heurspl[0]),
+                            Integer.parseInt(heurspl[1])
+                    );
 
-			switch (query) {
-				case "tables":
-					String date = queryparam.get("date");
-					String heure = queryparam.get("heure");
-					String[] datespl = date.split("\\-");
-					String[] heurspl = heure.split("\\:");
+                    Utils.sendJson(exchange, serveur.bd.getTablesLibres(idtable, d));
+                    break;
 
-					LocalDateTime d =  LocalDateTime.of(
-							Integer.parseInt(datespl[0]),
-							Integer.parseInt(datespl[1]),
-							Integer.parseInt(datespl[2]),
-							Integer.parseInt(heurspl[0]),
-							Integer.parseInt(heurspl[1])
-							);
+                case "reserver":
 
-					Utils.sendJson(exchange, serveur.bd.getTablesLibres(idtable, d));
-					break;
+                    JSONTokener tokener = new JSONTokener(exchange.getRequestBody());
+                    JSONObject json = new JSONObject(tokener);
 
-				case "reserver":
+                    String res = serveur.bd.reserver(
+                            (String) json.get("nom"),
+                            (String) json.get("prenom"),
+                            Integer.parseInt((String) json.get("convives")),
+                            (String) json.get("tel"),
+                            LocalDateTime.parse(
+                                    (String) json.get("date"),
+                                    DateTimeFormatter.ISO_INSTANT
+                            ),
+                            Integer.parseInt((String) json.get("tableId"))
+                    );
+                    Utils.sendText(exchange, res);
 
-					JSONTokener tokener = new JSONTokener(exchange.getRequestBody());	
-					JSONObject json =  new JSONObject(tokener);
+                    break;
 
-					String res = serveur.bd.reserver(
-							(String)json.get("nom"),
-							(String)json.get("prenom"),
-							Integer.parseInt((String)json.get("convives")),
-							(String)json.get("tel"),
-							LocalDateTime.parse(
-								(String)json.get("date"),
-								DateTimeFormatter.ISO_INSTANT
-								),
-							Integer.parseInt((String)json.get("tableId"))
-							);
-					Utils.sendText(exchange, res);	
+                default:
+                    Utils.sendError(exchange);
 
-					break;
+            }
+        } catch (Exception e) {
+            Utils.sendError(exchange, e);
+        }
 
-
-				default:
-					Utils.sendError(exchange);
-
-			}
-		} catch (Exception e) {
-			Utils.sendError(exchange, e);
-		}
-
-
-	}
+    }
 }

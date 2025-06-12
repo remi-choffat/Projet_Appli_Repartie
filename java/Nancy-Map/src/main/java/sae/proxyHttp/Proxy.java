@@ -13,35 +13,37 @@ import java.rmi.RemoteException;
 import java.time.Duration;
 
 import org.json.JSONObject;
-public class Proxy implements ServiceProxy{
 
-	HttpClient client;
+public class Proxy implements ServiceProxy {
 
-	public Proxy(){
-		client = HttpClient.newBuilder()
-			.version(Version.HTTP_1_1)
-			.followRedirects(Redirect.NORMAL)
-			.connectTimeout(Duration.ofSeconds(20))
-			// .proxy(ProxySelector.of(new InetSocketAddress("www-cache", 3128)))
-			.build();
-	}
+    HttpClient client;
 
-	@Override
-	public String getJson(String uri) throws RemoteException{
-		HttpRequest request = HttpRequest.newBuilder()
-			.uri(URI.create(uri))
-			.GET()
-			.build();
-		try {
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-			if(response.statusCode() >= 200 && response.statusCode() < 300){
-				JSONObject jo = new JSONObject(response.body());
-				return jo.toString();
-			}
-			return null;
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		return null;
-	}
+    public Proxy() {
+        client = HttpClient.newBuilder()
+                .version(Version.HTTP_1_1)
+                .followRedirects(Redirect.NORMAL)
+                .connectTimeout(Duration.ofSeconds(20))
+                // .proxy(ProxySelector.of(new InetSocketAddress("www-cache", 3128)))
+                .build();
+    }
+
+    @Override
+    public String getJson(String uri) throws RemoteException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .GET()
+                .build();
+        try {
+            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+            if (response.statusCode() >= 200 && response.statusCode() < 300) {
+                JSONObject jo = new JSONObject(response.body());
+                return jo.toString();
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
 }

@@ -15,29 +15,27 @@ import sae.proxyHttp.ServiceProxy;
  */
 public class ProxyHandler implements HttpHandler {
 
+    Serveur serveur;
+    String url;
+
+    public ProxyHandler(Serveur serveur, String url) {
+        this.serveur = serveur;
+        this.url = url;
+    }
 
 
-	Serveur serveur;
-	String url;
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+        label:
+        {
+            if (serveur.proxy == null) {
+                Utils.sendError(exchange);
+                break label;
+            }
 
-	public ProxyHandler(Serveur serveur, String url) {
-		this.serveur = serveur;
-		this.url = url;
-	}
+            String json = serveur.proxy.getJson(url);
+            Utils.sendJson(exchange, json);
+        }
 
-
-	@Override
-	public void handle(HttpExchange exchange) throws IOException {
-		label :  {
-			if (serveur.proxy==null) {
-				Utils.sendError(exchange);
-				break label;
-			}
-
-			String json = serveur.proxy.getJson(url);
-			Utils.sendJson(exchange, json);
-		}
-
-
-	}
+    }
 }

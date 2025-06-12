@@ -5,6 +5,6 @@ import java.rmi.RemoteException;
 
 import org.json.JSONObject;
 
-public interface ServiceProxy extends Remote{
-	String getJson(String uri) throws RemoteException;
+public interface ServiceProxy extends Remote {
+    String getJson(String uri) throws RemoteException;
 }

@@ -11,27 +11,26 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 /**
- * EndpointHandlr
+ * EndpointHandler
  */
 public class EndpointHandler implements HttpHandler {
 
-	private HashMap<String, HttpContext> endpoints;
+    private final HashMap<String, HttpContext> endpoints;
 
-	public EndpointHandler(HashMap<String, HttpContext> contexts) {
-		this.endpoints = contexts;
-	}
+    public EndpointHandler(HashMap<String, HttpContext> contexts) {
+        this.endpoints = contexts;
+    }
 
-	@Override
-	public void handle(HttpExchange exchange) throws IOException {
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
 
-		JSONObject json = new JSONObject();
-		JSONArray arr = new JSONArray();
-	
-		endpoints.keySet().forEach(arr::put);
-		json.put("endpoints", arr);
+        JSONObject json = new JSONObject();
+        JSONArray arr = new JSONArray();
 
-		Utils.sendJson(exchange, json.toString());	
-	}
+        endpoints.keySet().forEach(arr::put);
+        json.put("endpoints", arr);
 
-	
+        Utils.sendJson(exchange, json.toString());
+    }
+
 }
