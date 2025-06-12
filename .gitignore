@@ -42,4 +42,8 @@ target/
 
 web/resto.json
 web/incidents.json
-web/tables.json
+web/tables.jsono
+
+### runApp.sh ###
+.logs
+.pid
