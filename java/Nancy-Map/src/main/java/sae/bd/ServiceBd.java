@@ -9,5 +9,5 @@ public interface ServiceBd extends Remote {
 
     String getTablesLibres(int idResto, LocalDateTime heure) throws RemoteException;
 
-    String reserver(String nom, String prenom, int convives, String num, LocalDateTime date, int tableid);
+    String reserver(String nom, String prenom, int convives, String num, LocalDateTime date, int tableid) throws RemoteException;
 }
