@@ -220,10 +220,13 @@ async function sendReservation(data) {
             body: JSON.stringify(data)
         });
         if (!res.ok) {
-            throw new Error(await res.text());
+            throw new Error("Impossible de réserver : " + res.status + " " + res.statusText);
         }
-        const result = await res.text();
-        showReservationModal(`<p>${result || 'Réservation effectuée !'}</p>`);
+        const result = await res.json();
+        if (result.status > 300) {
+            throw new Error(result.message || "Erreur lors de la réservation");
+        }
+        showReservationModal(`<p>${result.message || "Réservation effectuée !"}</p>`);
     } catch (error) {
         console.error('Erreur lors de l\'envoi de la réservation :', error);
         showReservationModal(`<p style="color:#dc3545;margin-top:10px;">Une erreur est survenue lors de la réservation...</p>`);

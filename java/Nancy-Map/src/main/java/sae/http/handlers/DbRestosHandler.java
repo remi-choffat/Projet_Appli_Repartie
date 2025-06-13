@@ -81,7 +81,7 @@ public class DbRestosHandler implements HttpHandler {
                     JSONTokener tokener = new JSONTokener(exchange.getRequestBody());
                     JSONObject json = new JSONObject(tokener);
 
-                    String res = serveur.bd.reserver(
+                    Object[] res = serveur.bd.reserver(
                             (String) json.get("nom"),
                             (String) json.get("prenom"),
                             Integer.parseInt((String) json.get("convives")),
@@ -92,7 +92,10 @@ public class DbRestosHandler implements HttpHandler {
                             ),
                             Integer.parseInt((String) json.get("tableId"))
                     );
-                    Utils.sendText(exchange, res);
+                    Utils.sendJson(exchange, String.valueOf(new JSONObject()
+                            .put("message", res[0])
+                            .put("status", res[1]))
+                    );
 
                     break;
 

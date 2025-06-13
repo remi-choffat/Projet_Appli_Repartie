@@ -49,9 +49,11 @@ public class Bd implements ServiceBd {
     }
 
     @Override
-    public String reserver(String nom, String prenom, int convives, String num, LocalDateTime date, int tableid) {
+    public Object[] reserver(String nom, String prenom, int convives, String num, LocalDateTime date, int tableid) {
+        String message = "Erreur lors de la réservation.";
+        int httpStatus = 500;
         try {
-            CallableStatement cstmt = con.prepareCall("{call reserver_table(?, ?, ?, ?, ?, ?, ?, ?) }");
+            CallableStatement cstmt = con.prepareCall("{call reserver_table(?, ?, ?, ?, ?, ?, ?, ?, ?) }");
             cstmt.registerOutParameter(8, Types.VARCHAR);
             cstmt.setInt(1, tableid);
             cstmt.setString(2, nom);
@@ -60,12 +62,15 @@ public class Bd implements ServiceBd {
             cstmt.setString(5, num);
             cstmt.setTimestamp(6, Timestamp.valueOf(date));
             cstmt.setTimestamp(7, Timestamp.valueOf(date.plusHours(2)));
+            cstmt.registerOutParameter(8, Types.VARCHAR);
+            cstmt.registerOutParameter(9, Types.INTEGER);
             cstmt.execute();
-            return cstmt.getString(8);
+            message = cstmt.getString(8);
+            httpStatus = cstmt.getInt(9);
         } catch (SQLException e) {
             System.err.println("Problème SQL : " + e.getMessage());
         }
-        return null;
+        return new Object[]{message, httpStatus};
     }
 
     private JSONObject resToJson(ResultSet rs, String name) {
