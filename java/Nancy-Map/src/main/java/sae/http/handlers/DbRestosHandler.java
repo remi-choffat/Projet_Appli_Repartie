@@ -3,7 +3,9 @@ package sae.http.handlers;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,21 +34,6 @@ public class DbRestosHandler implements HttpHandler {
 
         try {
 
-            String origin = exchange.getRequestHeaders().getFirst("Origin");
-            if (origin != null && (origin.contains("localhost") || origin.contains("https://webetu.iutnc.univ-lorraine.fr"))) {
-                exchange.getResponseHeaders().set("Access-Control-Allow-Origin", origin);
-            } else {
-                exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "null");
-            }
-            exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
-            exchange.getResponseHeaders().add("Access-Control-Allow-Credentials", "true");
-
-            if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
-                exchange.sendResponseHeaders(204, -1); // Pas de contenu
-                return;
-            }
-
             if (serveur.bd == null) {
                 Utils.sendError(exchange);
                 return;
@@ -64,20 +51,19 @@ public class DbRestosHandler implements HttpHandler {
                 return;
             }
 
-            String[] s = path.split("/");
+						String[] s = path.split("/");
+						String requete = s[s.length - 1];
 
-            int idtable = Integer.parseInt(s[0]);
-
-            Map<String, String> queryparam = new HashMap<>();
-            for (String split : exchange.getRequestURI().getQuery().split("&")) {
-                String[] entry = split.split("=");
-                queryparam.put(URLDecoder.decode(entry[0], StandardCharsets.UTF_8), URLDecoder.decode(entry[1], StandardCharsets.UTF_8));
-            }
-            String query = s[1];
-
-            switch (query) {
+            switch (requete) {
                 case "tables":
-                    String date = queryparam.get("date");
+									Map<String, String> queryparam = new HashMap<>();
+									int idtable = Integer.parseInt(s[0]);
+
+									for (String split : exchange.getRequestURI().getQuery().split("&")) {
+										String[] entry = split.split("=");
+										queryparam.put(URLDecoder.decode(entry[0], StandardCharsets.UTF_8), URLDecoder.decode(entry[1], StandardCharsets.UTF_8));
+									}
+									String date = queryparam.get("date");
                     String heure = queryparam.get("heure");
                     String[] datespl = date.split("-");
                     String[] heurspl = heure.split(":");
@@ -95,20 +81,23 @@ public class DbRestosHandler implements HttpHandler {
 
                 case "reserver":
 
-                    JSONTokener tokener = new JSONTokener(exchange.getRequestBody());
-                    JSONObject json = new JSONObject(tokener);
+										String text = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                    JSONObject json = new JSONObject(text);
+
+										String isoDate = (String) json.get("date");
+										DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+										Instant instant = Instant.from(formatter.parse(isoDate));
+										LocalDateTime dt = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
 
                     Object[] res = serveur.bd.reserver(
                             (String) json.get("nom"),
                             (String) json.get("prenom"),
                             Integer.parseInt((String) json.get("convives")),
                             (String) json.get("tel"),
-                            LocalDateTime.parse(
-                                    (String) json.get("date"),
-                                    DateTimeFormatter.ISO_INSTANT
-                            ),
+														dt,
                             Integer.parseInt((String) json.get("tableId"))
                     );
+
                     Utils.sendJson(exchange, String.valueOf(new JSONObject()
                             .put("message", res[0])
                             .put("status", res[1]))

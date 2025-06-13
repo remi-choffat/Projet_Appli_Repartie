@@ -162,7 +162,7 @@ async function fetchAvailableTables(resto, date, time) {
         <h3 class="subtitle">Tables disponibles</h3>
         <ul>
             ${tables.map(t => `<li>
-                <button class="selectTableBtn button" data-idtable="${t.numTable}" style="margin-bottom: 5px;">${t.nom}</button>
+                <button class="selectTableBtn button" data-idtable="${t.numtable}" style="margin-bottom: 5px;">${t.nom}</button>
             </li>`).join('')}
         </ul>
     `);
@@ -216,7 +216,7 @@ async function sendReservation(data) {
     try {
         const res = await fetch(RMI_API + "/reserver", {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify(data)
         });
         if (!res.ok) {

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 reg=1099
-port=8080
+port=9090
 
 if [ -n "$1" ]; then
   reg="$1"
