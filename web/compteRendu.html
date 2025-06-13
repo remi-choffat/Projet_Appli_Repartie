@@ -2,13 +2,13 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Compte-rendu - Nancy Map - Projet d'Application Répartie">
     <title>Nancy Map - Compte rendu</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <link rel="icon" type="image/ico" href="img/favicon.ico">
 </head>
+
 <body>
 <section class="section">
     <div class="header-flex-container">
@@ -27,7 +27,7 @@
                 <li><strong>Frontend</strong> : Interface web utilisant HTML, CSS, JavaScript et Leaflet pour afficher
                     une carte interactive centrée sur Nancy.
                 </li>
-                <li><strong>Backend</strong> : Service RMI déployé sur le serveur de l'IUT, interrogeant une base de
+                <li><strong>Backend</strong> : Service RMI déployé sur les machines de l'IUT, interrogeant une base de
                     données Oracle pour les données des restaurants.
                 </li>
                 <li><strong>Base de données</strong> : Hébergée sur
@@ -38,7 +38,8 @@
                     restrictions CORS et accéder à des données bloquées.
                 </li>
                 <li><strong>API externes</strong> : Utilisation de l'API Cyclocity
-                    (<code>https://api.cyclocity.fr</code>) pour les données des stations Vélo.
+                    (<code>https://api.cyclocity.fr</code>) pour les données des stations Vélo, l'API <code>data.education.gouv.fr</code>
+                    pour afficher les établissements scolaires...
                 </li>
             </ul>
             <figure class="image">
@@ -56,7 +57,9 @@
                 <li><strong>Base de données</strong> : Oracle (via JDBC).</li>
                 <li><strong>Hébergement</strong> : Serveur webetu pour le site, machines de l'IUT pour les services RMI.
                 </li>
-                <li><strong>Versionnement</strong> : Git, hébergé sur GitHub.</li>
+                <li><strong>Versionnement</strong> : Git, hébergé sur <a
+                        href="https://github.com/remi-choffat/Projet_Appli_Repartie.git">GitHub</a>.
+                </li>
             </ul>
         </section>
 
@@ -66,9 +69,17 @@
                 <li>Carte interactive centrée sur Nancy avec trois couches de base : OpenStreetMap, OpenStreetMap.HOT,
                     OpenTopoMap.
                 </li>
-                <li>Affichage des stations Vélo avec leurs adresses et capacités, récupérées via l'API Cyclocity.</li>
+                <li>Affichage des stations Vélo avec leurs adresses et capacités, des établissements scolaires, des
+                    restaurants et des incidents de la circulation.
+                </li>
                 <li>Interface utilisateur avec navigation entre la carte et la page de compte rendu.</li>
-                <li>...to do...</li>
+                <li>Interactions RMI avec un serveur central (topologie en étoile)</li>
+                <li>Réservations de tables dans les restaurants via une interface dédiée.</li>
+                <li>Utilisation d'un proxy pour contourner les restrictions CORS et accéder aux données des API
+                    externes.
+                </li>
+                <li>Déploiement sur le serveur webetu et les machines de l'IUT.</li>
+                <li>Gestion des erreurs et des exceptions pour une meilleure robustesse de l'application.</li>
             </ul>
         </section>
 
@@ -76,19 +87,25 @@
             <h3 class="title is-4">Instructions d'utilisation</h3>
             <p>Pour utiliser l'application :</p>
             <ol>
-                <li>Accédez au site via le serveur <code>webetu</code>.</li>
-                <li>La carte affiche par défaut les stations Vélo et les restaurants .</li>
-                <li>Utilisez le contrôleur de couches (en haut à droite) pour activer/désactiver les stations Vélo ou
-                    les restaurants, et pour changer la couche de base (Nancy Map, Nancy Map HOT, Nancy Topo Map).
+                <li>Déployez les services sur les machines via le <a
+                        href="https://github.com/remi-choffat/Projet_Appli_Repartie/tree/master/java/Nancy-Map/runDistant.sh">script
+                    de déploiement</a>.
                 </li>
-                <li>...to do...</li>
+                <li>Accédez au site via le serveur <code>webetu</code>.</li>
+                <li>Cliquez sur l'icône de configuration en bas à gauche de la page pour renseigner l'adresse IP du
+                    service central.
+                </li>
+                <li>Les différentes données se chargent alors automatiquement sur la page.</li>
+                <li>Utilisez le contrôleur de couches (en haut à droite) pour sélectionner les données à afficher et
+                    pour changer la couche de base (Nancy Map, Nancy Map HOT, Nancy Topo Map).
+                </li>
             </ol>
         </section>
 
         <section class="content">
             <h3 class="title is-4">Dépôt Git</h3>
-            <p>Le code source complet du projet est disponible sur :</p>
-            <p><a href="https://github.com/remi-choffat/Projet_Appli_Repartie.git">https://github.com/remi-choffat/Projet_Appli_Repartie.git</a>
+            <p>Le code source complet du projet est disponible sur : <a
+                    href="https://github.com/remi-choffat/Projet_Appli_Repartie.git">https://github.com/remi-choffat/Projet_Appli_Repartie.git</a>
             </p>
         </section>
     </div>
@@ -100,5 +117,6 @@
             Kateryna, VAULTRIN Maxime</a>
     </p>
 </footer>
+
 </body>
 </html>
