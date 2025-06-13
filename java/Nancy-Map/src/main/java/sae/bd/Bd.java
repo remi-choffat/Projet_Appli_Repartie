@@ -77,7 +77,7 @@ public class Bd implements ServiceBd {
                             "WHERE t.IDRESTO = ? " +
                             "AND TO_DATE(?, 'HH24:MI') BETWEEN " +
                             "    TO_DATE(r.HEUREOUVERTURE, 'HH24:MI') AND " +
-                            "    (CASE WHEN r.HEUREFERMETURE = '00:00' THEN TO_DATE('24:00', 'HH24:MI') ELSE TO_DATE(r.HEUREFERMETURE, 'HH24:MI') END) " +
+                            "    (CASE WHEN r.HEUREFERMETURE = '00:00' THEN TO_DATE('23:59', 'HH24:MI') ELSE TO_DATE(r.HEUREFERMETURE, 'HH24:MI') END) " +
                             "MINUS " +
                             "SELECT t.NUMTABLE, t.IDRESTO, t.NOM " +
                             "FROM TABLES_RESTO t " +
