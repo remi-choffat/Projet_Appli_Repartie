@@ -7,6 +7,8 @@ import java.util.Objects;
 
 import org.json.*;
 
+import com.sun.org.apache.xpath.internal.operations.And;
+
 /**
  * Gestion de la base de données
  */
@@ -71,22 +73,42 @@ public class Bd implements ServiceBd {
     public String getTablesLibres(int idResto, LocalDateTime heure) throws RemoteException {
         try {
             stmt = con.prepareStatement(
-                    "SELECT t.NUMTABLE, t.IDRESTO, t.NOM " +
-                            "FROM TABLES_RESTO t " +
-                            "INNER JOIN RESTAURANTS r ON r.ID = t.IDRESTO " +
-                            "WHERE t.IDRESTO = ? " +
-                            "AND TO_DATE(?, 'HH24:MI') BETWEEN " +
-                            "    TO_DATE(r.HEUREOUVERTURE, 'HH24:MI') AND " +
-                            "    (CASE WHEN r.HEUREFERMETURE = '00:00' THEN TO_DATE('23:59', 'HH24:MI') ELSE TO_DATE(r.HEUREFERMETURE, 'HH24:MI') END) " +
-                            "MINUS " +
-                            "SELECT t.NUMTABLE, t.IDRESTO, t.NOM " +
-                            "FROM TABLES_RESTO t " +
-                            "INNER JOIN RESERVATIONS res ON res.NUMTABLE = t.NUMTABLE " +
-                            "WHERE ? BETWEEN res.HEUREDEBUT AND res.HEUREFIN"
+					"""
+					SELECT t.NUMTABLE, t.IDRESTO, t.NOM 
+					FROM TABLES_RESTO t 
+					INNER JOIN RESTAURANTS r ON r.ID = t.IDRESTO 
+					WHERE t.IDRESTO = ? 
+					AND (
+						(
+						TO_DATE(r.HEUREOUVERTURE, 'HH24:MI') > TO_DATE(r.HEUREFERMETURE, 'HH24:MI') AND 
+							(
+								TO_DATE(?, 'HH24:MI') < TO_DATE(r.HEUREFERMETURE, 'HH24:MI')
+							OR 
+								TO_DATE(?, 'HH24:MI') > TO_DATE(r.HEUREOUVERTURE, 'HH24:MI')
+							)
+						)
+						OR 	
+							(
+							TO_DATE(r.HEUREOUVERTURE, 'HH24:MI') <= TO_DATE(r.HEUREFERMETURE, 'HH24:MI')  
+							AND
+								(TO_DATE(?, 'HH24:MI') BETWEEN 
+									TO_DATE(r.HEUREOUVERTURE, 'HH24:MI') AND 
+									(CASE WHEN r.HEUREFERMETURE = '00:00' THEN TO_DATE('23:59', 'HH24:MI') ELSE TO_DATE(r.HEUREFERMETURE, 'HH24:MI') END)
+								)
+							)
+						)
+					MINUS 
+					SELECT t.NUMTABLE, t.IDRESTO, t.NOM 
+					FROM TABLES_RESTO t 
+					INNER JOIN RESERVATIONS res ON res.NUMTABLE = t.NUMTABLE 
+					WHERE ? BETWEEN res.HEUREDEBUT AND res.HEUREFIN
+					"""
             );
             stmt.setInt(1, idResto);
             stmt.setString(2, heure.getHour() + ":" + heure.getMinute());
-            stmt.setTimestamp(3, Timestamp.valueOf(heure));
+            stmt.setString(3, heure.getHour() + ":" + heure.getMinute());
+            stmt.setString(4, heure.getHour() + ":" + heure.getMinute());
+            stmt.setTimestamp(5, Timestamp.valueOf(heure));
             ResultSet rs = stmt.executeQuery();
             return Objects.requireNonNull(resToJson(rs, "tables")).toString();
         } catch (SQLException e) {
