@@ -31,7 +31,12 @@ public class DbRestosHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
 
-            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            String origin = exchange.getRequestHeaders().getFirst("Origin");
+            if (origin != null && (origin.contains("http://localhost") || origin.contains("https://webetu.iutnc.univ-lorraine.fr"))) {
+                exchange.getResponseHeaders().set("Access-Control-Allow-Origin", origin);
+            } else {
+                exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "null");
+            }
             exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
             exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
 
