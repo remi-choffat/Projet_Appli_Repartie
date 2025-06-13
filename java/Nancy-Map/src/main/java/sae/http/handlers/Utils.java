@@ -100,6 +100,8 @@ public class Utils {
      */
     protected static void sendError(HttpExchange exchange) throws IOException {
 
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+
         System.err.println(">> ERROR AT ");
         for (StackTraceElement stackTrace : Thread.currentThread().getStackTrace()) {
             System.err.println("\t" + stackTrace.toString());
