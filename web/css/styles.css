@@ -1,58 +1,120 @@
+/* Plein écran pour la carte */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    background: #f5f6fa;
+}
+
 #map {
-    height: 500px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+/* En-tête flottant et stylé */
+#en-tete {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    padding: 18px 36px;
+    z-index: 1001;
+    min-width: 320px;
+    max-width: 90vw;
 }
 
 .header-flex-container {
-    width: 100%;
-    box-sizing: border-box;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    gap: 32px;
 }
 
 #header-droite {
     display: flex;
     align-items: center;
+    gap: 18px;
 }
 
-@media (max-width: 768px) {
+#notif {
+    font-size: 1.3em;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+#en-tete h1 {
+    margin: 0;
+    font-size: 2.0em;
+    font-weight: 700;
+    color: #2d3a4a;
+}
+
+#en-tete h2 {
+    margin: 0;
+    font-size: 1.1em;
+    color: #6c7a89;
+}
+
+/* Footer discret */
+footer {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    padding: 6px 18px;
+    font-size: 0.95em;
+    z-index: 1001;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.07);
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    #en-tete {
+        padding: 10px 8px 8px 8px;
+        min-width: unset;
+    }
+
     .header-flex-container {
         flex-direction: column;
-        gap: 1rem;
+        gap: 10px;
+    }
+
+    #header-droite img {
+        width: 60px;
+    }
+
+    footer {
+        font-size: 0.85em;
+        padding: 4px 8px;
     }
 }
 
-footer {
-    background-color: #f5f5f5;
-    padding: 1rem;
-    text-align: center;
-    border-top: 1px solid #ddd;
-    margin-top: 2rem;
-    font-size: 0.9rem;
-    color: #333;
-}
-
-footer p {
-    margin: 0;
-}
-
-footer a {
-    color: #3273dc;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-footer a:hover {
-    color: #2557a7;
-    text-decoration: underline;
-}
-
-.badge-statut {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 12px;
-    color: #fff;
-    font-weight: bold;
-    font-size: 0.95em;
-    margin-bottom: 0.5rem;
+#btnChangeApiIp {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    opacity: 0.75;
+    z-index: 99999;
+    background: #eee;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
 }
