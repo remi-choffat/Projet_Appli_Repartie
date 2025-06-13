@@ -1,7 +1,8 @@
-import {incidentsLayer, coordonnees} from "./map.js";
+import {incidentsLayer} from "./map.js";
+import {getApiBaseUrl} from "./api.js";
 
 // URL de l'API pour les incidents de la circulation
-const RMI_API = "http://localhost:9090/incidents"; // TODO: Remplacer par l'URL de l'API RMI
+const RMI_API = getApiBaseUrl() + "/incidents";
 
 
 // Icône pour les incidents

@@ -1,7 +1,8 @@
 import {restaurantLayer, coordonnees} from "./map.js";
+import {getApiBaseUrl} from "./api.js";
 
 // URL de l'API pour les restaurants
-const RMI_API = "http://localhost:9090/restos"; // TODO: Remplacer par l'URL de l'API RMI
+const RMI_API = getApiBaseUrl() + "/restos";
 
 
 // Icône pour les restaurants
@@ -105,6 +106,8 @@ function openReservationForm(resto) {
         <div id="reservationError" style="color:#dc3545;margin-top:10px;"></div>
     `);
     document.getElementById('checkTablesBtn').onclick = async () => {
+        document.getElementById('checkTablesBtn').disabled = true;
+        document.getElementById('checkTablesBtn').classList.add("is-loading");
         const date = document.getElementById('resDate').value;
         const time = document.getElementById('resTime').value;
         const errorDiv = document.getElementById('reservationError');

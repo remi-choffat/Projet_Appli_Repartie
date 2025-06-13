@@ -57,8 +57,26 @@
     </p>
 </footer>
 
+<!-- Bouton caché pour changer l'IP de l'API -->
+<button id="btnChangeApiIp"
+        style="position:fixed;bottom:12px;right:12px;opacity:0.2;z-index:99999;background:#eee;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;"
+        title="Changer l'IP API">⚙️
+</button>
+<div id="modalChangeIp"
+     style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:10000;align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:20px;border-radius:8px;min-width:260px;">
+        <label for="inputApiIp">Nouvelle IP API : </label>
+        <br/><br/>
+        <input id="inputApiIp" type="text" class="input"/>
+        <br/><br/>
+        <button id="btnSaveApiIp" class="button is-small is-info">OK</button>
+        <button id="btnCancelApiIp" class="button is-small">Annuler</button>
+    </div>
+</div>
+
 </body>
 
+<script type="module" src="js/api.js"></script>
 <script type="module" src="js/map.js"></script>
 <script type="module" src="js/veloStanLib.js"></script>
 <script type="module" src="js/restaurants.js"></script>
