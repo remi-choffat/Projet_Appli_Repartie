@@ -82,21 +82,26 @@ public class Serveur implements ServiceServeurHttp {
         return context;
     }
 
-
+	/**
+	 * Constructeur met un place un serveur HTTPS (cerficats auto signé)
+	 * 
+	 * @param port port de l'api
+	 *
+	 */
     public Serveur(int port) throws Exception {
         InetSocketAddress inet = new InetSocketAddress(port);
         server = HttpsServer.create(inet, 0);
 
-		SSLContext sslContext = SSLContext.getInstance("TLS");char[] password = "simulator".toCharArray();
+		// systeme de certicat HTTPS
+		SSLContext sslContext = SSLContext.getInstance("TLS");
+		char[] password = "simulator".toCharArray();
 		KeyStore ks = KeyStore.getInstance("JKS");
 		FileInputStream fis = new FileInputStream("lig.keystore");
 		ks.load(fis, password);
 
-		// Set up the key manager factory
 		KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
 		kmf.init(ks, password);
 
-		// Set up the trust manager factory
 		TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
 		tmf.init(ks);
 
@@ -104,14 +109,12 @@ public class Serveur implements ServiceServeurHttp {
 		((HttpsServer)server).setHttpsConfigurator(new HttpsConfigurator(sslContext) {
 			public void configure(HttpsParameters params) {
 				try {
-					// Initialise the SSL context
 					SSLContext c = SSLContext.getDefault();
 					SSLEngine engine = c.createSSLEngine();
 					params.setNeedClientAuth(false);
 					params.setCipherSuites(engine.getEnabledCipherSuites());
 					params.setProtocols(engine.getEnabledProtocols());
 
-					// Get the default parameters
 					SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
 					params.setSSLParameters(defaultSSLParameters);
 				} catch (Exception ex) {
@@ -121,7 +124,7 @@ public class Serveur implements ServiceServeurHttp {
 		});
 
 
-
+		// handler qui affiche les endpoints actifs
         getContext("/").setHandler(new EndpointHandler(contexts));
     }
 
