@@ -7,7 +7,6 @@ import java.util.Objects;
 
 import org.json.*;
 
-import com.sun.org.apache.xpath.internal.operations.And;
 
 /**
  * Gestion de la base de données
