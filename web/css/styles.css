@@ -118,3 +118,13 @@ footer {
     height: 32px;
     cursor: pointer;
 }
+
+.badge-statut {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.95em;
+    margin-bottom: 0.5rem;
+}
