@@ -45,5 +45,5 @@ web/incidents.json
 web/tables.jsono
 
 ### runApp.sh ###
-.logs
-.pid
+*.logs
+*.pid
