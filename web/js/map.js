@@ -93,7 +93,7 @@ if (navigator.geolocation) {
         },
         () => {
             // Permission refusée ou erreur, reste sur Nancy
-            console.log("Géolocalisation non disponible ou permission refusée, utilisation des coordonnées par défaut.");
+            console.warn("Géolocalisation non disponible ou permission refusée, utilisation des coordonnées par défaut.");
         }
     );
 }

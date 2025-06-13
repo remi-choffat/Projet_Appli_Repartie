@@ -70,7 +70,20 @@ public class Bd implements ServiceBd {
     @Override
     public String getTablesLibres(int idResto, LocalDateTime heure) throws RemoteException {
         try {
-            stmt = con.prepareStatement("SELECT TABLES_RESTO.NUMTABLE, TABLES_RESTO.IDRESTO, TABLES_RESTO.NOM FROM TABLES_RESTO INNER JOIN RESTAURANTS ON RESTAURANTS.ID = TABLES_RESTO.IDRESTO WHERE IDRESTO = ? AND TO_DATE(?, 'HH24:MI') between TO_DATE(HEUREOUVERTURE, 'HH24:MI') and TO_DATE(HEUREFERMETURE, 'HH24:MI') MINUS SELECT TABLES_RESTO.NUMTABLE, TABLES_RESTO.IDRESTO, TABLES_RESTO.NOM FROM TABLES_RESTO INNER JOIN RESERVATIONS ON RESERVATIONS.NUMTABLE = TABLES_RESTO.NUMTABLE WHERE ? between HEUREDEBUT and HEUREFIN");
+            stmt = con.prepareStatement(
+                    "SELECT t.NUMTABLE, t.IDRESTO, t.NOM " +
+                            "FROM TABLES_RESTO t " +
+                            "INNER JOIN RESTAURANTS r ON r.ID = t.IDRESTO " +
+                            "WHERE t.IDRESTO = ? " +
+                            "AND TO_DATE(?, 'HH24:MI') BETWEEN " +
+                            "    TO_DATE(r.HEUREOUVERTURE, 'HH24:MI') AND " +
+                            "    (CASE WHEN r.HEUREFERMETURE = '00:00' THEN TO_DATE('24:00', 'HH24:MI') ELSE TO_DATE(r.HEUREFERMETURE, 'HH24:MI') END) " +
+                            "MINUS " +
+                            "SELECT t.NUMTABLE, t.IDRESTO, t.NOM " +
+                            "FROM TABLES_RESTO t " +
+                            "INNER JOIN RESERVATIONS res ON res.NUMTABLE = t.NUMTABLE " +
+                            "WHERE ? BETWEEN res.HEUREDEBUT AND res.HEUREFIN"
+            );
             stmt.setInt(1, idResto);
             stmt.setString(2, heure.getHour() + ":" + heure.getMinute());
             stmt.setTimestamp(3, Timestamp.valueOf(heure));

@@ -105,9 +105,8 @@ function openReservationForm(resto) {
         <button class="button" id="checkTablesBtn">Voir les tables disponibles</button>
         <div id="reservationError" style="color:#dc3545;margin-top:10px;"></div>
     `);
-    document.getElementById('checkTablesBtn').onclick = async () => {
-        document.getElementById('checkTablesBtn').disabled = true;
-        document.getElementById('checkTablesBtn').classList.add("is-loading");
+    const checkTablesBtn = document.getElementById('checkTablesBtn');
+    checkTablesBtn.onclick = async () => {
         const date = document.getElementById('resDate').value;
         const time = document.getElementById('resTime').value;
         const errorDiv = document.getElementById('reservationError');
@@ -142,7 +141,11 @@ function openReservationForm(resto) {
             }
         }
 
+        checkTablesBtn.disabled = true;
+        checkTablesBtn.classList.add("is-loading");
+
         await fetchAvailableTables(resto, date, time);
+
     };
 }
 
@@ -155,8 +158,11 @@ function openReservationForm(resto) {
  * @returns {Promise<void>} La liste des tables disponibles.
  */
 async function fetchAvailableTables(resto, date, time) {
+    const checkTablesBtn = document.getElementById('checkTablesBtn');
     const url = `${RMI_API}/${resto.id}/tables?date=${date}&heure=${time}`;
     const res = await fetch(url);
+    checkTablesBtn.disabled = false;
+    checkTablesBtn.classList.remove("is-loading");
     if (!res.ok) return alert('Erreur lors de la récupération des tables');
     const reponse = await res.json();
     const tables = reponse.tables || [];
