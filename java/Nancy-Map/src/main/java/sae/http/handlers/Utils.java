@@ -36,22 +36,17 @@ public class Utils {
             return;
         }
 
-				exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
-				// String origin = exchange.getRequestHeaders().getFirst("Origin");
-				// if (origin != null && (origin.contains("localhost") || origin.contains("https://webetu.iutnc.univ-lorraine.fr"))) {
-				// 	exchange.getResponseHeaders().set("Access-Control-Allow-Origin", origin);
-				// 	System.out.println("cors ok " + origin);
-				// } else {
-				// 	exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "null");
-				// }
-				exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-				exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
-				exchange.getResponseHeaders().add("Access-Control-Allow-Credentials", "true");
+        // Ajoute les en-têtes CORS
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+        exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
+        exchange.getResponseHeaders().add("Access-Control-Allow-Credentials", "true");
 
-				if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
-					exchange.sendResponseHeaders(204, -1); // Pas de contenu
-					return;
-				}
+        // Gère les requêtes OPTIONS pour le CORS
+        if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
+            exchange.sendResponseHeaders(204, -1); // Pas de contenu
+            return;
+        }
 
         byte[] response = json.getBytes();
         exchange.getResponseHeaders().set("Content-Type", "application/json");
@@ -71,7 +66,6 @@ public class Utils {
         System.err.println(">> ERROR AT ");
         for (StackTraceElement stackTrace : Thread.currentThread().getStackTrace()) {
             System.err.println("\t" + stackTrace.toString());
-
         }
 
         exchange.sendResponseHeaders(400, -1);

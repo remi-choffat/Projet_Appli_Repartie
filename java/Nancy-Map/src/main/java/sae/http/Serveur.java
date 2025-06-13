@@ -54,7 +54,6 @@ public class Serveur implements ServiceServeurHttp {
         server = HttpServer.create(inet, 0);
 
         getContext("/").setHandler(new EndpointHandler(contexts));
-        getContext("/webetu").setHandler(new EndpointHandler(contexts));
     }
 
     public void start(String regip, int regport) throws RemoteException {

@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -51,19 +50,19 @@ public class DbRestosHandler implements HttpHandler {
                 return;
             }
 
-						String[] s = path.split("/");
-						String requete = s[s.length - 1];
+            String[] s = path.split("/");
+            String requete = s[s.length - 1];
 
             switch (requete) {
                 case "tables":
-									Map<String, String> queryparam = new HashMap<>();
-									int idtable = Integer.parseInt(s[0]);
+                    Map<String, String> queryparam = new HashMap<>();
+                    int idtable = Integer.parseInt(s[0]);
 
-									for (String split : exchange.getRequestURI().getQuery().split("&")) {
-										String[] entry = split.split("=");
-										queryparam.put(URLDecoder.decode(entry[0], StandardCharsets.UTF_8), URLDecoder.decode(entry[1], StandardCharsets.UTF_8));
-									}
-									String date = queryparam.get("date");
+                    for (String split : exchange.getRequestURI().getQuery().split("&")) {
+                        String[] entry = split.split("=");
+                        queryparam.put(URLDecoder.decode(entry[0], StandardCharsets.UTF_8), URLDecoder.decode(entry[1], StandardCharsets.UTF_8));
+                    }
+                    String date = queryparam.get("date");
                     String heure = queryparam.get("heure");
                     String[] datespl = date.split("-");
                     String[] heurspl = heure.split(":");
@@ -81,20 +80,20 @@ public class DbRestosHandler implements HttpHandler {
 
                 case "reserver":
 
-										String text = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                    String text = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                     JSONObject json = new JSONObject(text);
 
-										String isoDate = (String) json.get("date");
-										DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
-										Instant instant = Instant.from(formatter.parse(isoDate));
-										LocalDateTime dt = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    String isoDate = (String) json.get("date");
+                    DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+                    Instant instant = Instant.from(formatter.parse(isoDate));
+                    LocalDateTime dt = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
 
                     Object[] res = serveur.bd.reserver(
                             (String) json.get("nom"),
                             (String) json.get("prenom"),
                             Integer.parseInt((String) json.get("convives")),
                             (String) json.get("tel"),
-														dt,
+                            dt,
                             Integer.parseInt((String) json.get("tableId"))
                     );
 

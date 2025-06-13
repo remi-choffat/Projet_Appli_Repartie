@@ -41,7 +41,7 @@ public class Proxy implements ServiceProxy {
             }
             return null;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
         return null;
     }
