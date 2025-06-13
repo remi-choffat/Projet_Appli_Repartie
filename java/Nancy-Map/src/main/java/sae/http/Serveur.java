@@ -1,19 +1,30 @@
 package sae.http;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.KeyStore;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.TrustManagerFactory;
 
 import static java.util.Map.entry;
 
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsParameters;
+import com.sun.net.httpserver.HttpsServer;
 
 import sae.bd.ServiceBd;
 import sae.http.handlers.DbRestosHandler;
@@ -72,9 +83,44 @@ public class Serveur implements ServiceServeurHttp {
     }
 
 
-    public Serveur(int port) throws IOException {
+    public Serveur(int port) throws Exception {
         InetSocketAddress inet = new InetSocketAddress(port);
-        server = HttpServer.create(inet, 0);
+        server = HttpsServer.create(inet, 0);
+
+		SSLContext sslContext = SSLContext.getInstance("TLS");char[] password = "simulator".toCharArray();
+		KeyStore ks = KeyStore.getInstance("JKS");
+		FileInputStream fis = new FileInputStream("lig.keystore");
+		ks.load(fis, password);
+
+		// Set up the key manager factory
+		KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+		kmf.init(ks, password);
+
+		// Set up the trust manager factory
+		TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+		tmf.init(ks);
+
+		sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+		((HttpsServer)server).setHttpsConfigurator(new HttpsConfigurator(sslContext) {
+			public void configure(HttpsParameters params) {
+				try {
+					// Initialise the SSL context
+					SSLContext c = SSLContext.getDefault();
+					SSLEngine engine = c.createSSLEngine();
+					params.setNeedClientAuth(false);
+					params.setCipherSuites(engine.getEnabledCipherSuites());
+					params.setProtocols(engine.getEnabledProtocols());
+
+					// Get the default parameters
+					SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
+					params.setSSLParameters(defaultSSLParameters);
+				} catch (Exception ex) {
+					System.err.println(ex);
+				}
+			}
+		});
+
+
 
         getContext("/").setHandler(new EndpointHandler(contexts));
     }
