@@ -129,13 +129,22 @@ function openReservationForm(resto) {
         if (resto.heureOuverture && resto.heureFermeture) {
             const [hO, mO] = resto.heureOuverture.split(':').map(Number);
             const [hF, mF] = resto.heureFermeture.split(':').map(Number);
+
             const ouverture = new Date(selected);
             ouverture.setHours(hO, mO, 0, 0);
-            const fermeture = new Date(selected);
-            fermeture.setHours(hF, mF, 0, 0);
-            if (fermeture <= ouverture) fermeture.setDate(fermeture.getDate() + 1);
 
-            if (selected < ouverture || selected >= fermeture) {
+            let fermeture = new Date(ouverture);
+            fermeture.setHours(hF, mF, 0, 0);
+            if (fermeture <= ouverture) {
+                fermeture.setDate(fermeture.getDate() + 1);
+            }
+
+            let selectedToCompare = new Date(selected);
+            if (selectedToCompare < ouverture) {
+                selectedToCompare.setDate(selectedToCompare.getDate() + 1);
+            }
+
+            if (selectedToCompare < ouverture || selectedToCompare >= fermeture) {
                 errorDiv.textContent = `Réservation possible uniquement entre ${resto.heureOuverture} et ${resto.heureFermeture}.`;
                 return;
             }
