@@ -30,7 +30,7 @@ public class Utils {
     }
 
     protected static void sendJson(HttpExchange exchange, String json) throws IOException {
-        System.out.println(json);
+        // System.out.println(json);
         OutputStream os = exchange.getResponseBody();
         if (json == null) {
             sendError(exchange);
