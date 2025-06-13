@@ -6,10 +6,17 @@ import java.io.OutputStream;
 import com.sun.net.httpserver.HttpExchange;
 
 /**
- * Utils
+ * Classe utilitaire pour envoyer des réponses HTTP.
  */
 public class Utils {
 
+    /**
+     * Envoie une réponse HTTP avec un texte brut.
+     *
+     * @param exchange l'échange HTTP contenant la requête et la réponse.
+     * @param text     le texte à envoyer dans la réponse.
+     * @throws IOException si une erreur d'entrée/sortie se produit lors de l'envoi de la réponse.
+     */
     protected static void sendText(HttpExchange exchange, String text) throws IOException {
         OutputStream os = exchange.getResponseBody();
         if (text == null) {
@@ -25,10 +32,26 @@ public class Utils {
         os.close();
     }
 
+
+    /**
+     * Envoie une réponse HTTP avec un statut 200 OK sans contenu.
+     *
+     * @param exchange l'échange HTTP contenant la requête et la réponse.
+     * @param json     le JSON à envoyer dans la réponse (peut être null).
+     * @throws IOException si une erreur d'entrée/sortie se produit lors de l'envoi de la réponse.
+     */
     protected static void sendOk(HttpExchange exchange, String json) throws IOException {
         exchange.sendResponseHeaders(200, -1);
     }
 
+
+    /**
+     * Envoie une réponse HTTP avec un JSON.
+     *
+     * @param exchange l'échange HTTP contenant la requête et la réponse.
+     * @param json     le JSON à envoyer dans la réponse (peut être null).
+     * @throws IOException si une erreur d'entrée/sortie se produit lors de l'envoi de la réponse.
+     */
     protected static void sendJson(HttpExchange exchange, String json) throws IOException {
         OutputStream os = exchange.getResponseBody();
         if (json == null) {
@@ -56,11 +79,25 @@ public class Utils {
     }
 
 
+    /**
+     * Envoie une réponse d'erreur HTTP avec un statut 400 Bad Request.
+     *
+     * @param exchange l'échange HTTP contenant la requête et la réponse.
+     * @param err      l'exception à enregistrer dans la console.
+     * @throws IOException si une erreur d'entrée/sortie se produit lors de l'envoi de la réponse.
+     */
     protected static void sendError(HttpExchange exchange, Throwable err) throws IOException {
         sendError(exchange);
         System.err.println(err.getMessage());
     }
 
+
+    /**
+     * Envoie une réponse d'erreur HTTP avec un statut 400 Bad Request.
+     *
+     * @param exchange l'échange HTTP contenant la requête et la réponse.
+     * @throws IOException si une erreur d'entrée/sortie se produit lors de l'envoi de la réponse.
+     */
     protected static void sendError(HttpExchange exchange) throws IOException {
 
         System.err.println(">> ERROR AT ");

@@ -14,8 +14,15 @@ import java.time.Duration;
 
 import org.json.JSONObject;
 
+/**
+ * Classe qui implémente le proxy de service HTTP.
+ * Elle utilise HttpClient pour envoyer des requêtes HTTP et récupérer des réponses JSON.
+ */
 public class Proxy implements ServiceProxy {
 
+    /**
+     * Client HTTP utilisé pour envoyer des requêtes.
+     */
     HttpClient client;
 
     public Proxy() {
@@ -27,6 +34,14 @@ public class Proxy implements ServiceProxy {
                 .build();
     }
 
+
+    /**
+     * Récupère un JSON à partir d'une URI donnée.
+     *
+     * @param uri URI de la ressource à récupérer.
+     * @return Le JSON sous forme de chaîne de caractères, ou null si la requête échoue.
+     * @throws RemoteException si une erreur de communication se produit lors de la récupération du JSON.
+     */
     @Override
     public String getJson(String uri) throws RemoteException {
         HttpRequest request = HttpRequest.newBuilder()

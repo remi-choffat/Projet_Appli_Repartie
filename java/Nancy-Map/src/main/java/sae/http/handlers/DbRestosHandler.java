@@ -18,16 +18,25 @@ import com.sun.net.httpserver.HttpHandler;
 import sae.http.Serveur;
 
 /**
- * DbRestosHandler
+ * Handler pour les requêtes liées à la base de données des restaurants.
  */
 public class DbRestosHandler implements HttpHandler {
 
+    /**
+     * Instance du serveur HTTP
+     */
     Serveur serveur;
 
     public DbRestosHandler(Serveur serveur) {
         this.serveur = serveur;
     }
 
+
+    /**
+     * Gère les requêtes HTTP pour les opérations liées aux restaurants.
+     *
+     * @param exchange L'échange HTTP contenant la requête et la réponse.
+     */
     @Override
     public void handle(HttpExchange exchange) throws IOException {
 
@@ -54,7 +63,15 @@ public class DbRestosHandler implements HttpHandler {
             String requete = s[s.length - 1];
 
             switch (requete) {
+
+                // Récupération des tables libres pour un restaurant à une heure donnée
                 case "tables":
+
+                    if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+                        Utils.sendError(exchange);
+                        return;
+                    }
+
                     Map<String, String> queryparam = new HashMap<>();
                     int idtable = Integer.parseInt(s[0]);
 
@@ -78,7 +95,14 @@ public class DbRestosHandler implements HttpHandler {
                     Utils.sendJson(exchange, serveur.bd.getTablesLibres(idtable, d));
                     break;
 
+
+                // Réservation d'une table dans un restaurant
                 case "reserver":
+
+                    if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                        Utils.sendError(exchange);
+                        return;
+                    }
 
                     String text = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                     JSONObject json = new JSONObject(text);
@@ -108,6 +132,7 @@ public class DbRestosHandler implements HttpHandler {
                     Utils.sendError(exchange);
 
             }
+
         } catch (Exception e) {
             System.err.println(e.getMessage());
             Utils.sendError(exchange, e);

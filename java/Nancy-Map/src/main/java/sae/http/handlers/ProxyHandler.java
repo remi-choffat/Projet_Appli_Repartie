@@ -11,11 +11,18 @@ import sae.http.Serveur;
 import sae.proxyHttp.ServiceProxy;
 
 /**
- * ProxyHandler
+ * Handler pour les requêtes proxy HTTP.
  */
 public class ProxyHandler implements HttpHandler {
 
+    /**
+     * Instance du serveur HTTP
+     */
     Serveur serveur;
+
+    /**
+     * URL de la ressource à récupérer via le proxy.
+     */
     String url;
 
     public ProxyHandler(Serveur serveur, String url) {
@@ -24,6 +31,12 @@ public class ProxyHandler implements HttpHandler {
     }
 
 
+    /**
+     * Gère les requêtes HTTP pour récupérer des données via un proxy.
+     *
+     * @param exchange l'échange HTTP contenant la requête et la réponse.
+     * @throws IOException si une erreur d'entrée/sortie se produit lors du traitement de la requête.
+     */
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         label:

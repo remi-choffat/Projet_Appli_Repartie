@@ -1,7 +1,7 @@
 package sae.http;
 
 /**
- * LancerServeur
+ * Lance le serveur HTTP.
  */
 public class LancerServeur {
 
@@ -10,4 +10,5 @@ public class LancerServeur {
 
         serv.start(args[0], Integer.parseInt(args[1]));
     }
+
 }

@@ -229,7 +229,7 @@ async function sendReservation(data) {
         showReservationModal(`<p>${result.message || "Réservation effectuée !"}</p>`);
     } catch (error) {
         console.error('Erreur lors de l\'envoi de la réservation :', error);
-        showReservationModal(`<p style="color:#dc3545;margin-top:10px;">Une erreur est survenue lors de la réservation...</p>`);
+        showReservationModal(`<p style="color:#dc3545;margin-top:10px;">${error.message}</p>`);
     }
 }
 

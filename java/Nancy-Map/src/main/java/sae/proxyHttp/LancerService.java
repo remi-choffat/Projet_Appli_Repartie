@@ -8,6 +8,10 @@ import java.rmi.server.UnicastRemoteObject;
 
 import sae.http.ServiceServeurHttp;
 
+/**
+ * Lance le service de proxy HTTP.
+ * Ce service permet de rediriger les requêtes HTTP vers des endpoints distants.
+ */
 public class LancerService {
 
     public static void main(String[] args) throws RemoteException, NotBoundException {

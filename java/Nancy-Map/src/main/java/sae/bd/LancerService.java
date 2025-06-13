@@ -9,6 +9,9 @@ import java.rmi.server.UnicastRemoteObject;
 import io.github.cdimascio.dotenv.Dotenv;
 import sae.http.ServiceServeurHttp;
 
+/**
+ * Lance le service de base de données
+ */
 public class LancerService {
 
     public static void main(String[] args) throws RemoteException, NotBoundException {

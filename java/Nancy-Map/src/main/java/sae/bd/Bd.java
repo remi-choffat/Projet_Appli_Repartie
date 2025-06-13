@@ -7,11 +7,29 @@ import java.util.Objects;
 
 import org.json.*;
 
+/**
+ * Gestion de la base de données
+ */
 public class Bd implements ServiceBd {
 
+    /**
+     * Connexion à la base de données
+     */
     Connection con;
+
+    /**
+     * Préparation de la requête SQL
+     */
     PreparedStatement stmt;
 
+
+    /**
+     * Constructeur de la classe Bd
+     *
+     * @param url      URL de la base de données
+     * @param user     Nom d'utilisateur de la base de données
+     * @param password Mot de passe de la base de données
+     */
     public Bd(String url, String user, String password) {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -21,6 +39,13 @@ public class Bd implements ServiceBd {
         }
     }
 
+
+    /**
+     * Récupère la liste des restaurants
+     *
+     * @return Liste des restaurants au format JSON
+     * @throws RemoteException Si une erreur de communication se produit
+     */
     public String getRestos() throws RemoteException {
         try {
             stmt = con.prepareStatement("SELECT * FROM RESTAURANTS");
@@ -33,6 +58,15 @@ public class Bd implements ServiceBd {
         return null;
     }
 
+
+    /**
+     * Récupère les tables libres d'un restaurant à une heure donnée
+     *
+     * @param idResto Identifiant du restaurant
+     * @param heure   Heure à laquelle on cherche les tables libres
+     * @return Liste des tables libres au format JSON
+     * @throws RemoteException Si une erreur de communication se produit
+     */
     @Override
     public String getTablesLibres(int idResto, LocalDateTime heure) throws RemoteException {
         try {
@@ -48,6 +82,18 @@ public class Bd implements ServiceBd {
         return null;
     }
 
+
+    /**
+     * Réserve une table dans un restaurant
+     *
+     * @param nom      Nom du client
+     * @param prenom   Prénom du client
+     * @param convives Nombre de convives
+     * @param num      Numéro de téléphone du client
+     * @param date     Date et heure de la réservation
+     * @param tableid  Identifiant de la table à réserver
+     * @return Un tableau contenant un message de confirmation et le statut HTTP
+     */
     @Override
     public Object[] reserver(String nom, String prenom, int convives, String num, LocalDateTime date, int tableid) {
         String message = "Erreur lors de la réservation.";
@@ -73,6 +119,14 @@ public class Bd implements ServiceBd {
         return new Object[]{message, httpStatus};
     }
 
+
+    /**
+     * Convertit un ResultSet en objet JSON
+     *
+     * @param rs   ResultSet à convertir
+     * @param name Nom de l'objet JSON à créer
+     * @return Objet JSON contenant les données du ResultSet
+     */
     private JSONObject resToJson(ResultSet rs, String name) {
         try {
             JSONObject res = new JSONObject(); // objet JSON final
@@ -95,4 +149,5 @@ public class Bd implements ServiceBd {
         }
         return null;
     }
+
 }
