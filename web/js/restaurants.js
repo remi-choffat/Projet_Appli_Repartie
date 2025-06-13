@@ -41,7 +41,7 @@ async function fetchRestaurants() {
 function getRestaurantStatus(heureOuverture, heureFermeture) {
 
     if (!heureOuverture || !heureFermeture) {
-        return {statut: "Horaires non renseignées", couleur: "#6c757d"};
+        return {statut: "Horaires non renseignés", couleur: "#6c757d"};
     }
 
     const now = new Date();
