@@ -2,7 +2,7 @@
 
 
 if [ -z "$1" ] || [ -z "$2" ]; then 
-	echo "usage ./runDistant.sh <ssh user> <hostserveur> [portserver] [hostserviceproxy] [portserviceproxy] [hostservicedb] [portservicedb]"
+	echo "usage ./runDistant.sh <ssh user> <hostserveur> [portserver] [hostserviceproxy] [portserviceproxy] [hostservicedb] [portservicedb] [portapi]"
 	exit 1;
 fi
 
