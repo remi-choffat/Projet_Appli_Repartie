@@ -39,25 +39,25 @@ if [ -n "$8" ]; then portapi=$8 ; fi
 dir=$PWD
 
 
-ssh $user@$hostserveur "cd $dir && rmiregistry $portserver -J-classpath -Jtarget/Nancy-Map-1-jar-with-dependencies.jar > registry1.logs 2>&1"
-check_succes $! "rmiregistry server"
+ssh $user@$hostserveur "cd $dir && rmiregistry $portserver -J-classpath -Jtarget/Nancy-Map-1-jar-with-dependencies.jar > registry1.logs 2>&1 && echo $hostserveur $! registry.pid"
+check_succes $? "rmiregistry server"
 
 
 if [ "$hostserveur" != "$hostserviceproxy" ] && [ "$portserver" != "$portserviceproxy" ] ; then 
-	ssh $user@$hostserviceproxy "cd $dir && rmiregistry $portserviceproxy -J-classpath -Jtarget/Nancy-Map-1-jar-with-dependencies.jar > registry2.logs 2>&1"
-check_succes $! "rmiregistry service proxyHttp"
+	ssh $user@$hostserviceproxy "cd $dir && rmiregistry $portserviceproxy -J-classpath -Jtarget/Nancy-Map-1-jar-with-dependencies.jar > registry2.logs 2>&1 && echo $hostserviceproxy $! > registry_serviceproxy.pid "
+	check_succes $? "rmiregistry service proxyHttp"
 fi
 
 if [ "$hostserveur" != "$hostservicedb" ] && [ "$portserver" != "$portservicedb" ] ; then 
-	ssh $user@$hostservicedb "cd $dir && rmiregistry $portservicedb -J-classpath -Jtarget/Nancy-Map-1-jar-with-dependencies.jar > registry3.logs 2>&1"
-check_succes $! "rmiregistry server servicebd"
+	ssh $user@$hostservicedb "cd $dir && rmiregistry $portservicedb -J-classpath -Jtarget/Nancy-Map-1-jar-with-dependencies.jar > registry3.logs 2>&1 && echo $hostservicedb $! > registry_servicebd.pid"
+	check_succes $? "rmiregistry server servicebd"
 fi
 
 
 
-ssh $user@$hostserveur "cd $dir && java -cp target/Nancy-Map-1-jar-with-dependencies.jar sae.http.LancerServeur localhost $portserver $portapi > server.logs 2>&1 &"
-check_succes $! "server"
-ssh $user@$hostserviceproxy "cd $dir && java -cp target/Nancy-Map-1-jar-with-dependencies.jar sae.bd.LancerService localhost $portserviceproxy $hostserveur $portserver $ > servicebd.logs 2>&1 &"
-check_succes $! "serviceproxy"
-ssh $user@$hostservicedb "cd $dir && java -cp target/Nancy-Map-1-jar-with-dependencies.jar sae.proxyHttp.LancerService localhost $portservicedb $hostserveur $portserver > serviceproxy.logs 2>&1  &"
-check_succes $! "servicebd"
+ssh $user@$hostserveur "cd $dir && java -cp target/Nancy-Map-1-jar-with-dependencies.jar sae.http.LancerServeur localhost $portserver $portapi > server.logs 2>&1 & && echo $hostserveur $! > serveur.pid"
+check_succes $? "server"
+ssh $user@$hostserviceproxy "cd $dir && java -cp target/Nancy-Map-1-jar-with-dependencies.jar sae.bd.LancerService localhost $portserviceproxy $hostserveur $portserver $ > servicebd.logs 2>&1 & && echo $hostserviceproxy $! > serviceproxy.pid"
+check_succes $? "serviceproxy"
+ssh $user@$hostservicedb "cd $dir && java -cp target/Nancy-Map-1-jar-with-dependencies.jar sae.proxyHttp.LancerService localhost $portservicedb $hostserveur $portserver > serviceproxy.logs 2>&1 & && echo $hostservicedb $! > servicebd.pid"
+check_succes $? "servicebd"
